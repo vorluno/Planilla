@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\UI\\Planilla.Web\\Planilla.Web.csproj": {}
+    "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\UI\\Planilla.Web\\Planilla.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj": {
+    "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj",
+        "projectUniqueName": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj",
         "projectName": "Planilla.Application",
-        "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj",
+        "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj",
         "packagesPath": "C:\\Users\\gjose\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Application\\obj\\",
+        "outputPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -26,14 +26,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj": {
-                "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj"
+              "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj": {
+                "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj"
               }
             }
           }
@@ -75,18 +76,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj": {
+    "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
         "projectName": "Planilla.Domain",
-        "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
+        "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
         "packagesPath": "C:\\Users\\gjose\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\obj\\",
+        "outputPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -101,6 +102,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -146,18 +148,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj": {
+    "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj",
         "projectName": "Planilla.Infrastructure",
-        "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\gjose\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -172,14 +174,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj": {
-                "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj"
+              "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj": {
+                "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj"
               }
             }
           }
@@ -213,6 +216,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.6, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[9.0.7, )"
             }
           },
           "imports": [
@@ -231,18 +238,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\UI\\Planilla.Web\\Planilla.Web.csproj": {
+    "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\UI\\Planilla.Web\\Planilla.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\UI\\Planilla.Web\\Planilla.Web.csproj",
+        "projectUniqueName": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\UI\\Planilla.Web\\Planilla.Web.csproj",
         "projectName": "Planilla.Web",
-        "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\UI\\Planilla.Web\\Planilla.Web.csproj",
+        "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\UI\\Planilla.Web\\Planilla.Web.csproj",
         "packagesPath": "C:\\Users\\gjose\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\UI\\Planilla.Web\\obj\\",
+        "outputPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\UI\\Planilla.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -257,20 +264,21 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj": {
-                "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj"
+              "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj": {
+                "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Application\\Planilla.Application.csproj"
               },
-              "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj": {
-                "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj"
+              "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj": {
+                "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj"
               },
-              "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj"
+              "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Infrastructure\\Planilla.Infrastructure\\Planilla.Infrastructure.csproj"
               }
             }
           }
@@ -335,7 +343,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

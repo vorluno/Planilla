@@ -17,3 +17,23 @@ C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Infrastructure\Planilla.I
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.pdb
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.genruntimeconfig.cache
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\ref\Planilla.Infrastructure.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\bin\Debug\net9.0\Planilla.Infrastructure.deps.json
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\bin\Debug\net9.0\Planilla.Infrastructure.runtimeconfig.json
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\bin\Debug\net9.0\Planilla.Infrastructure.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\bin\Debug\net9.0\Planilla.Infrastructure.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\bin\Debug\net9.0\Planilla.Application.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\bin\Debug\net9.0\Planilla.Domain.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\bin\Debug\net9.0\Planilla.Application.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\bin\Debug\net9.0\Planilla.Domain.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.AssemblyInfo.cs
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.sourcelink.json
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.C213316C.Up2Date
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\refint\Planilla.Infrastructure.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\Planilla.Infrastructure.genruntimeconfig.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Infrastructure\Planilla.Infrastructure\obj\Debug\net9.0\ref\Planilla.Infrastructure.dll

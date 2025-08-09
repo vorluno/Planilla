@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Planilla.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bda3bd4a0c500dbc907022ecfabaf26479e3a76c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Planilla.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Planilla.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

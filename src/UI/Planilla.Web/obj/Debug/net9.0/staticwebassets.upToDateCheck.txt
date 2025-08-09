@@ -1,8 +1,8 @@
-C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\UI\Planilla.Web\wwwroot\app.css
-C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\UI\Planilla.Web\wwwroot\react\index.html
-C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\UI\Planilla.Web\wwwroot\react\react-app.css
-C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\UI\Planilla.Web\wwwroot\react\vite.svg
-C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\UI\Planilla.Web\wwwroot\react\react-app.js
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\UI\Planilla.Web\wwwroot\app.css
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\UI\Planilla.Web\wwwroot\react\index.html
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\UI\Planilla.Web\wwwroot\react\react-app.css
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\UI\Planilla.Web\wwwroot\react\vite.svg
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\UI\Planilla.Web\wwwroot\react\react-app.js
 wwwroot\app.css
 wwwroot\react\index.html
 wwwroot\react\react-app.css

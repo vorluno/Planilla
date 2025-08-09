@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "doPRRyzx6as=",
+  "dgSpecHash": "z5hIJf7r8YQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
+  "projectFilePath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gjose\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\9.0.6\\microsoft.aspnetcore.cryptography.internal.9.0.6.nupkg.sha512",
     "C:\\Users\\gjose\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\9.0.6\\microsoft.aspnetcore.cryptography.keyderivation.9.0.6.nupkg.sha512",

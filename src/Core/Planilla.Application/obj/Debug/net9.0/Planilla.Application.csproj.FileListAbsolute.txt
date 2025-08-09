@@ -13,3 +13,19 @@ C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Core\Planilla.Application
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\refint\Planilla.Application.dll
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.pdb
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\ref\Planilla.Application.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\bin\Debug\net9.0\Planilla.Application.deps.json
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\bin\Debug\net9.0\Planilla.Application.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\bin\Debug\net9.0\Planilla.Application.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\bin\Debug\net9.0\Planilla.Domain.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\bin\Debug\net9.0\Planilla.Domain.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.csproj.AssemblyReference.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.AssemblyInfoInputs.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.AssemblyInfo.cs
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.csproj.CoreCompileInputs.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.sourcelink.json
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.154714DF.Up2Date
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\refint\Planilla.Application.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\Planilla.Application.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Application\obj\Debug\net9.0\ref\Planilla.Application.dll

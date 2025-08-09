@@ -551,11 +551,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
+      "projectUniqueName": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
       "projectName": "Planilla.Domain",
-      "projectPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
+      "projectPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\Planilla.Domain.csproj",
       "packagesPath": "C:\\Users\\gjose\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gjose\\Music\\PROYECTO EMPRESARIAL\\Planilla\\src\\Core\\Planilla.Domain\\obj\\",
+      "outputPath": "C:\\Users\\gjose\\Music\\PLANILLA - VISUALSTUDIO\\Planilla\\src\\Core\\Planilla.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -570,6 +570,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -615,7 +616,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -10,3 +10,16 @@ C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Core\Planilla.Domain\obj\
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.pdb
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\ref\Planilla.Domain.dll
 C:\Users\gjose\Music\PROYECTO EMPRESARIAL\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.csproj.AssemblyReference.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\bin\Debug\net9.0\Planilla.Domain.deps.json
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\bin\Debug\net9.0\Planilla.Domain.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\bin\Debug\net9.0\Planilla.Domain.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.csproj.AssemblyReference.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.AssemblyInfoInputs.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.AssemblyInfo.cs
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.csproj.CoreCompileInputs.cache
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.sourcelink.json
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\refint\Planilla.Domain.dll
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\Planilla.Domain.pdb
+C:\Users\gjose\Music\PLANILLA - VISUALSTUDIO\Planilla\src\Core\Planilla.Domain\obj\Debug\net9.0\ref\Planilla.Domain.dll
