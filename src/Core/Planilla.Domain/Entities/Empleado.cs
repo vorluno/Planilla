@@ -28,7 +28,7 @@ public class Empleado
 
     public bool EstaActivo { get; set; } = true;
 
-    // Propiedad de navegación: Un empleado puede tener muchos recibos de sueldo.
-    // Crearemos la clase ReciboDeSueldo más adelante.
+    // Propiedad de navegación: un empleado puede tener muchos recibos de sueldo.
+    // La clase ReciboDeSueldo ya está implementada y representa cada uno de ellos.
     public virtual ICollection<ReciboDeSueldo> RecibosDeSueldo { get; set; } = new List<ReciboDeSueldo>();
 }
