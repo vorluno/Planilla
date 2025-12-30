@@ -1,13 +1,13 @@
-ï»¿using Planilla.Application.Interfaces;
-using Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Planilla.Infrastructure.Repositories
+namespace Vorluno.Planilla.Infrastructure.Repositories
 {
     /// <summary>
-    /// ImplementaciÃ³n del patrÃ³n de Unidad de Trabajo que gestiona el ciclo de vida de los repositorios y las transacciones de la base de datos.
+    /// Implementación del patrón de Unidad de Trabajo que gestiona el ciclo de vida de los repositorios y las transacciones de la base de datos.
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
@@ -25,11 +25,11 @@ namespace Planilla.Infrastructure.Repositories
         {
             _context = context;
 
-            // Inicializa cada repositorio, pasÃ¡ndole el mismo contexto de la base de datos.
-            // Esto es crucial para que todos los repositorios compartan la misma transacciÃ³n.
+            // Inicializa cada repositorio, pasándole el mismo contexto de la base de datos.
+            // Esto es crucial para que todos los repositorios compartan la misma transacción.
             Empleados = new EmpleadoRepository(_context);
 
-            // AquÃ­ se inicializarÃ­an otros repositorios, como RecibosDeSueldoRepository
+            // Aquí se inicializarían otros repositorios, como RecibosDeSueldoRepository
         }
 
         /// <inheritdoc />
@@ -48,7 +48,7 @@ namespace Planilla.Infrastructure.Repositories
         /// <inheritdoc />
         public async Task<int> CompleteAsync()
         {
-            // Guarda todos los cambios pendientes (adds, updates, removes) en la base de datos en una Ãºnica transacciÃ³n.
+            // Guarda todos los cambios pendientes (adds, updates, removes) en la base de datos en una única transacción.
             return await _context.SaveChangesAsync();
         }
 

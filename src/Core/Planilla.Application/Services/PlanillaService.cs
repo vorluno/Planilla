@@ -1,21 +1,21 @@
-Ôªø// ====================================================================
+// ====================================================================
 // Planilla - PlanillaService
 // Creado: 2025-12-27
-// Descripci√≥n: Servicio de l√≥gica de negocio para operaciones de planilla
-// Integra c√°lculos de deducciones adicionales (pr√©stamos, deducciones fijas, anticipos)
+// DescripciÛn: Servicio de lÛgica de negocio para operaciones de planilla
+// Integra c·lculos de deducciones adicionales (prÈstamos, deducciones fijas, anticipos)
 // ====================================================================
 
-using Planilla.Application.Interfaces;
-using Planilla.Domain.Entities;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Planilla.Application.Services
+namespace Vorluno.Planilla.Application.Services
 {
     /// <summary>
-    /// Proporciona la l√≥gica de negocio central para las operaciones de la planilla.
-    /// Orquesta el uso de repositorios a trav√©s de la Unidad de Trabajo para ejecutar los casos de uso.
-    /// Integra c√°lculos de deducciones adicionales con el sistema de planilla.
+    /// Proporciona la lÛgica de negocio central para las operaciones de la planilla.
+    /// Orquesta el uso de repositorios a travÈs de la Unidad de Trabajo para ejecutar los casos de uso.
+    /// Integra c·lculos de deducciones adicionales con el sistema de planilla.
     /// </summary>
     public class PlanillaService
     {
@@ -26,7 +26,7 @@ namespace Planilla.Application.Services
         /// Inicializa una nueva instancia de la clase <see cref="PlanillaService"/>.
         /// </summary>
         /// <param name="unitOfWork">La unidad de trabajo que proporciona acceso a los repositorios.</param>
-        /// <param name="orchestrator">Orchestrador de c√°lculo de planilla</param>
+        /// <param name="orchestrator">Orchestrador de c·lculo de planilla</param>
         public PlanillaService(
             IUnitOfWork unitOfWork,
             PayrollCalculationOrchestratorPortable orchestrator)
@@ -38,13 +38,13 @@ namespace Planilla.Application.Services
         /// <summary>
         /// Obtiene todos los empleados registrados en el sistema.
         /// </summary>
-        /// <returns>Una colecci√≥n de entidades Empleado.</returns>
+        /// <returns>Una colecciÛn de entidades Empleado.</returns>
         public async Task<IEnumerable<Empleado>> GetAllEmployeesAsync()
         {
             return await _unitOfWork.Empleados.GetAllAsync();
         }
 
-        // Aqu√≠ ir√≠an otros m√©todos de negocio complejos, como:
+        // AquÌ irÌan otros mÈtodos de negocio complejos, como:
         // public async Task<ReciboDeSueldo> CalcularYGuardarReciboSueldoAsync(int empleadoId, ...)
     }
 }

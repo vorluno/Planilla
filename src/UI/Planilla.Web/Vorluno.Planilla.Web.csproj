@@ -5,6 +5,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Planilla.Web-1a0fcdd3-dfba-4b1f-a325-1324652deb75</UserSecretsId>
+
+    <!-- Metadatos de Vorluno -->
+    <Company>Vorluno</Company>
+    <Product>Vorluno Planilla - VOR-PLAN</Product>
+    <Description>Vorluno Planilla - Enterprise payroll management system - Web API</Description>
+    <Authors>Vorluno</Authors>
+    <Copyright>Copyright © Vorluno 2025</Copyright>
+    <RepositoryUrl>https://github.com/vorluno/planilla</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,9 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Planilla.Application\Planilla.Application.csproj" />
-    <ProjectReference Include="..\..\Core\Planilla.Domain\Planilla.Domain.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Planilla.Infrastructure\Planilla.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Core\Planilla.Application\Vorluno.Planilla.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Planilla.Domain\Vorluno.Planilla.Domain.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Planilla.Infrastructure\Vorluno.Planilla.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

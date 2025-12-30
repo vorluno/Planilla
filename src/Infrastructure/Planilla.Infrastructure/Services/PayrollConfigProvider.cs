@@ -6,11 +6,11 @@
 // ====================================================================
 
 using Microsoft.EntityFrameworkCore;
-using Planilla.Application.DTOs;
-using Planilla.Application.Interfaces;
-using Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Application.DTOs;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Infrastructure.Data;
 
-namespace Planilla.Infrastructure.Services;
+namespace Vorluno.Planilla.Infrastructure.Services;
 
 /// <summary>
 /// Implementación de IPayrollConfigProvider que obtiene configuración desde ApplicationDbContext.

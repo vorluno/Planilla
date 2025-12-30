@@ -5,7 +5,7 @@
 // Descripción: Resultado completo de cálculo CSS (empleado + empleador + riesgo)
 // ====================================================================
 
-namespace Planilla.Application.Results;
+namespace Vorluno.Planilla.Application.Results;
 
 /// <summary>
 /// Resultado completo del cálculo de aportes CSS.

@@ -6,7 +6,7 @@
 // IMPORTANTE: Seguro Educativo NO tiene tope máximo
 // ====================================================================
 
-namespace Planilla.Application.Results;
+namespace Vorluno.Planilla.Application.Results;
 
 /// <summary>
 /// Resultado del cálculo de Seguro Educativo.

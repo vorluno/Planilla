@@ -4,7 +4,7 @@
 // Descripción: DTOs para generar reportes de Caja de Seguro Social
 // ====================================================================
 
-namespace Planilla.Application.DTOs.Reportes;
+namespace Vorluno.Planilla.Application.DTOs.Reportes;
 
 /// <summary>
 /// DTO principal para el reporte de CSS

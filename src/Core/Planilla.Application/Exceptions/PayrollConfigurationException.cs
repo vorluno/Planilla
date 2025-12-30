@@ -5,7 +5,7 @@
 // Descripción: Excepción para errores de configuración de planilla
 // ====================================================================
 
-namespace Planilla.Application.Exceptions;
+namespace Vorluno.Planilla.Application.Exceptions;
 
 /// <summary>
 /// Excepción lanzada cuando falta o es inválida la configuración de planilla.

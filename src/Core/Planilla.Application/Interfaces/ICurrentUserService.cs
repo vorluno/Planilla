@@ -6,7 +6,7 @@
 // Provee CompanyId para multi-tenancy y filtrado global
 // ====================================================================
 
-namespace Planilla.Application.Interfaces;
+namespace Vorluno.Planilla.Application.Interfaces;
 
 /// <summary>
 /// Servicio que provee información del usuario actualmente autenticado.

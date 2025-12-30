@@ -5,10 +5,10 @@
 // ====================================================================
 
 using Microsoft.AspNetCore.Mvc;
-using Planilla.Application.DTOs.Reportes;
-using Planilla.Infrastructure.Services;
+using Vorluno.Planilla.Application.DTOs.Reportes;
+using Vorluno.Planilla.Infrastructure.Services;
 
-namespace Planilla.Web.Controllers;
+namespace Vorluno.Planilla.Web.Controllers;
 
 /// <summary>
 /// Controller para gestionar reportes de planilla

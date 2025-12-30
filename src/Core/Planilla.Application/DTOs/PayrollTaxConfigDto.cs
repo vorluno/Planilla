@@ -5,7 +5,7 @@
 // Descripción: DTO de configuración de tasas para servicios de cálculo
 // ====================================================================
 
-namespace Planilla.Application.DTOs;
+namespace Vorluno.Planilla.Application.DTOs;
 
 /// <summary>
 /// DTO de configuración de tasas e impuestos de planilla.

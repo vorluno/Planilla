@@ -1,4 +1,4 @@
-namespace Planilla.Application.DTOs;
+namespace Vorluno.Planilla.Application.DTOs;
 
 public record SaldoVacacionesDto(
     int EmpleadoId,

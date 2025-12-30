@@ -1,4 +1,4 @@
-namespace Planilla.Domain.Enums;
+namespace Vorluno.Planilla.Domain.Enums;
 
 /// <summary>
 /// Tipos de deducciones que se pueden aplicar a un empleado.

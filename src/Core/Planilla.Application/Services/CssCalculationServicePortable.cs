@@ -10,12 +10,12 @@
 //   - Lanza InvalidOperationException si falta configuración (NO fallback silencioso)
 // ====================================================================
 
-using Planilla.Application.DTOs;
-using Planilla.Application.Helpers;
-using Planilla.Application.Interfaces;
-using Planilla.Application.Results;
+using Vorluno.Planilla.Application.DTOs;
+using Vorluno.Planilla.Application.Helpers;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Application.Results;
 
-namespace Planilla.Application.Services;
+namespace Vorluno.Planilla.Application.Services;
 
 /// <summary>
 /// Servicio de cálculo de CSS (Caja de Seguro Social) según Ley 462 de Panamá.

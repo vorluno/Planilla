@@ -1,4 +1,4 @@
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 /// <summary>
 /// Representa un departamento o área organizacional de la empresa

@@ -5,7 +5,7 @@
 // Descripción: Resultado completo de cálculo de planilla para un empleado
 // ====================================================================
 
-namespace Planilla.Application.Results;
+namespace Vorluno.Planilla.Application.Results;
 
 /// <summary>
 /// Resultado completo del cálculo de planilla para un empleado.

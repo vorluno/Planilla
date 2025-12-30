@@ -5,7 +5,7 @@
 // Descripción: DTO de tramos ISR para servicios de cálculo
 // ====================================================================
 
-namespace Planilla.Application.DTOs;
+namespace Vorluno.Planilla.Application.DTOs;
 
 /// <summary>
 /// DTO de tramo de Impuesto Sobre la Renta (ISR).

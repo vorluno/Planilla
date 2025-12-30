@@ -7,9 +7,9 @@
 // ====================================================================
 
 using System.Security.Claims;
-using Planilla.Application.Interfaces;
+using Vorluno.Planilla.Application.Interfaces;
 
-namespace Planilla.Web.Services;
+namespace Vorluno.Planilla.Web.Services;
 
 /// <summary>
 /// Implementación de ICurrentUserService que obtiene información del usuario

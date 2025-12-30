@@ -1,13 +1,13 @@
-ï»¿using Planilla.Application.Interfaces;
-using Planilla.Domain.Entities;
-using Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Domain.Entities;
+using Vorluno.Planilla.Infrastructure.Data;
 
-namespace Planilla.Infrastructure.Repositories
+namespace Vorluno.Planilla.Infrastructure.Repositories
 {
     /// <summary>
-    /// Repositorio especÃ­fico para la entidad <see cref="Empleado"/>.
-    /// Hereda la funcionalidad CRUD genÃ©rica de la clase <see cref="Repository{T}"/> 
-    /// y es el lugar para implementar cualquier mÃ©todo de acceso a datos personalizado para los empleados.
+    /// Repositorio específico para la entidad <see cref="Empleado"/>.
+    /// Hereda la funcionalidad CRUD genérica de la clase <see cref="Repository{T}"/> 
+    /// y es el lugar para implementar cualquier método de acceso a datos personalizado para los empleados.
     /// </summary>
     public class EmpleadoRepository : Repository<Empleado>, IEmpleadoRepository
     {
@@ -19,8 +19,8 @@ namespace Planilla.Infrastructure.Repositories
         {
         }
 
-        // En el futuro, la implementaciÃ³n de mÃ©todos como
+        // En el futuro, la implementación de métodos como
         // public async Task<Empleado?> GetByNumeroIdentificacionAsync(string numeroIdentificacion)
-        // irÃ­a aquÃ­.
+        // iría aquí.
     }
 }

@@ -1,13 +1,13 @@
-Ôªøusing AutoMapper;
-using Planilla.Application.DTOs;
-using Planilla.Domain.Entities;
+using AutoMapper;
+using Vorluno.Planilla.Application.DTOs;
+using Vorluno.Planilla.Domain.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Planilla.Application.Mappings
+namespace Vorluno.Planilla.Application.Mappings
 {
     /// <summary>
     /// Define las reglas de mapeo entre las entidades del dominio y los DTOs.
-    /// AutoMapper escanear√° este ensamblado en busca de clases que hereden de Profile.
+    /// AutoMapper escanear· este ensamblado en busca de clases que hereden de Profile.
     /// </summary>
     public class MappingProfile : Profile
     {
@@ -18,7 +18,7 @@ namespace Planilla.Application.Mappings
                 .ForMember(dest => dest.DepartamentoNombre, opt => opt.MapFrom(src => src.Departamento != null ? src.Departamento.Nombre : null))
                 .ForMember(dest => dest.PosicionNombre, opt => opt.MapFrom(src => src.Posicion != null ? src.Posicion.Nombre : null));
 
-            // Mapeo de DTO a Entidad (para operaciones de escritura/actualizaci√≥n)
+            // Mapeo de DTO a Entidad (para operaciones de escritura/actualizaciÛn)
             CreateMap<EmpleadoCrearDto, Empleado>();
             CreateMap<EmpleadoActualizarDto, Empleado>();
         }

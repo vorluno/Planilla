@@ -5,7 +5,7 @@
 // Descripción: Estados del workflow de planilla
 // ====================================================================
 
-namespace Planilla.Domain.Enums;
+namespace Vorluno.Planilla.Domain.Enums;
 
 /// <summary>
 /// Estados posibles de una planilla en el workflow de procesamiento.

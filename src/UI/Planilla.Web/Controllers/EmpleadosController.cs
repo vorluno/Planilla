@@ -1,21 +1,21 @@
-Ôªøusing AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Planilla.Application.DTOs;
-using Planilla.Application.Interfaces;
-using Planilla.Domain.Entities;
-using Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Application.DTOs;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Domain.Entities;
+using Vorluno.Planilla.Infrastructure.Data;
 
-namespace Planilla.Web.Controllers
+namespace Vorluno.Planilla.Web.Controllers
 {
     /// <summary>
     /// Controlador de API para gestionar las operaciones CRUD de los empleados.
     /// </summary>
     // RISK: Authorization temporarily disabled for development/testing - re-enable for production
-    // [Authorize] // Proteger√° todo el controlador una vez configuremos la seguridad.
+    // [Authorize] // Proteger· todo el controlador una vez configuremos la seguridad.
     [ApiController]
-    [Route("api/[controller]")] // La ruta de acceso ser√° /api/empleados
+    [Route("api/[controller]")] // La ruta de acceso ser· /api/empleados
     public class EmpleadosController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -36,7 +36,7 @@ namespace Planilla.Web.Controllers
         }
 
         /// <summary>
-        /// Obtiene una lista de todos los empleados con su departamento y posici√≥n.
+        /// Obtiene una lista de todos los empleados con su departamento y posiciÛn.
         /// </summary>
         /// <returns>Una lista de empleados en formato DTO.</returns>
         [HttpGet]
@@ -51,7 +51,7 @@ namespace Planilla.Web.Controllers
         }
 
         /// <summary>
-        /// Obtiene un empleado espec√≠fico por su ID con su departamento y posici√≥n.
+        /// Obtiene un empleado especÌfico por su ID con su departamento y posiciÛn.
         /// </summary>
         /// <param name="id">El ID del empleado.</param>
         /// <returns>El empleado encontrado o un error 404 si no existe.</returns>
@@ -76,17 +76,17 @@ namespace Planilla.Web.Controllers
         /// <param name="empleadoDto">Los datos del nuevo empleado.</param>
         /// <returns>El nuevo empleado creado.</returns>
         [HttpPost]
-        // [Authorize(Roles = "Admin")] // En el futuro, solo los administradores podr√°n crear empleados.
+        // [Authorize(Roles = "Admin")] // En el futuro, solo los administradores podr·n crear empleados.
         public async Task<IActionResult> Create(EmpleadoCrearDto empleadoDto)
         {
             var empleado = _mapper.Map<Empleado>(empleadoDto);
-            empleado.FechaContratacion = DateTime.UtcNow; // L√≥gica de negocio simple
-            empleado.CompanyId = 1; // TODO: Obtener de ICurrentUserService cuando est√© implementado
+            empleado.FechaContratacion = DateTime.UtcNow; // LÛgica de negocio simple
+            empleado.CompanyId = 1; // TODO: Obtener de ICurrentUserService cuando estÈ implementado
 
             await _unitOfWork.Empleados.AddAsync(empleado);
             await _unitOfWork.CompleteAsync(); // Guarda los cambios en la BD
 
-            // Recargar con navegaci√≥n para el DTO
+            // Recargar con navegaciÛn para el DTO
             empleado = await _context.Empleados
                 .Include(e => e.Departamento)
                 .Include(e => e.Posicion)
@@ -94,7 +94,7 @@ namespace Planilla.Web.Controllers
 
             var empleadoCreadoDto = _mapper.Map<EmpleadoVerDto>(empleado);
 
-            // Devuelve una respuesta 201 Created con la ubicaci√≥n del nuevo recurso
+            // Devuelve una respuesta 201 Created con la ubicaciÛn del nuevo recurso
             return CreatedAtAction(nameof(GetById), new { id = empleado!.Id }, empleadoCreadoDto);
         }
 
@@ -103,9 +103,9 @@ namespace Planilla.Web.Controllers
         /// </summary>
         /// <param name="id">El ID del empleado a actualizar.</param>
         /// <param name="empleadoDto">Los datos actualizados del empleado.</param>
-        /// <returns>NoContent si la actualizaci√≥n fue exitosa, NotFound si no existe.</returns>
+        /// <returns>NoContent si la actualizaciÛn fue exitosa, NotFound si no existe.</returns>
         [HttpPut("{id}")]
-        // [Authorize(Roles = "Admin")] // En el futuro, solo los administradores podr√°n actualizar empleados.
+        // [Authorize(Roles = "Admin")] // En el futuro, solo los administradores podr·n actualizar empleados.
         public async Task<IActionResult> Update(int id, EmpleadoActualizarDto empleadoDto)
         {
             var empleado = await _unitOfWork.Empleados.GetByIdAsync(id);
@@ -120,16 +120,16 @@ namespace Planilla.Web.Controllers
             _unitOfWork.Empleados.Update(empleado);
             await _unitOfWork.CompleteAsync();
 
-            return NoContent(); // Retorna un 204 No Content para indicar √©xito
+            return NoContent(); // Retorna un 204 No Content para indicar Èxito
         }
 
         /// <summary>
         /// Elimina un empleado (soft delete usando EstaActivo = false).
         /// </summary>
         /// <param name="id">El ID del empleado a eliminar.</param>
-        /// <returns>NoContent si la eliminaci√≥n fue exitosa, NotFound si no existe.</returns>
+        /// <returns>NoContent si la eliminaciÛn fue exitosa, NotFound si no existe.</returns>
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "Admin")] // En el futuro, solo los administradores podr√°n eliminar empleados.
+        // [Authorize(Roles = "Admin")] // En el futuro, solo los administradores podr·n eliminar empleados.
         public async Task<IActionResult> Delete(int id)
         {
             var empleado = await _unitOfWork.Empleados.GetByIdAsync(id);
@@ -143,7 +143,7 @@ namespace Planilla.Web.Controllers
             _unitOfWork.Empleados.Update(empleado);
             await _unitOfWork.CompleteAsync();
 
-            return NoContent(); // Retorna un 204 No Content para indicar √©xito
+            return NoContent(); // Retorna un 204 No Content para indicar Èxito
         }
     }
 }

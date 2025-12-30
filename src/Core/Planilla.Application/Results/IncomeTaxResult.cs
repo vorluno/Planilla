@@ -5,7 +5,7 @@
 // Descripción: Resultado de cálculo de Impuesto Sobre la Renta (ISR)
 // ====================================================================
 
-namespace Planilla.Application.Results;
+namespace Vorluno.Planilla.Application.Results;
 
 /// <summary>
 /// Resultado del cálculo de Impuesto Sobre la Renta (ISR).

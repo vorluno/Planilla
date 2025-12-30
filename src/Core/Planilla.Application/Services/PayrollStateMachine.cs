@@ -6,9 +6,9 @@
 // Implementa reglas de negocio del workflow de planilla
 // ====================================================================
 
-using Planilla.Domain.Enums;
+using Vorluno.Planilla.Domain.Enums;
 
-namespace Planilla.Application.Services;
+namespace Vorluno.Planilla.Application.Services;
 
 /// <summary>
 /// Máquina de estados que define y valida las transiciones permitidas en el workflow de planilla.

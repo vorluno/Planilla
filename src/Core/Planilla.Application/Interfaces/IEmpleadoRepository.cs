@@ -1,17 +1,17 @@
-ï»¿using Planilla.Domain.Entities;
+using Vorluno.Planilla.Domain.Entities;
 
-namespace Planilla.Application.Interfaces
+namespace Vorluno.Planilla.Application.Interfaces
 {
     /// <summary>
-    /// Define el contrato para un repositorio especÃ­fico de la entidad <see cref="Empleado"/>.
+    /// Define el contrato para un repositorio específico de la entidad <see cref="Empleado"/>.
     /// </summary>
     /// <remarks>
-    /// Esta interfaz hereda todas las operaciones CRUD estÃ¡ndar de <see cref="IRepository{T}"/>
-    /// y sirve como un lugar centralizado para agregar mÃ©todos de consulta de datos que son Ãºnicos para los empleados.
+    /// Esta interfaz hereda todas las operaciones CRUD estándar de <see cref="IRepository{T}"/>
+    /// y sirve como un lugar centralizado para agregar métodos de consulta de datos que son únicos para los empleados.
     /// </remarks>
     public interface IEmpleadoRepository : IRepository<Empleado>
     {
-        // AquÃ­, en el futuro, podemos agregar mÃ©todos especÃ­ficos para Empleados.
+        // Aquí, en el futuro, podemos agregar métodos específicos para Empleados.
         // Ejemplo: Task<Empleado?> GetByNumeroIdentificacionAsync(string numeroIdentificacion);
     }
 }

@@ -5,7 +5,7 @@
 // Descripción: Resultado de cálculo CSS individual (empleado o empleador)
 // ====================================================================
 
-namespace Planilla.Application.Results;
+namespace Vorluno.Planilla.Application.Results;
 
 /// <summary>
 /// Resultado de un cálculo de aporte CSS individual.

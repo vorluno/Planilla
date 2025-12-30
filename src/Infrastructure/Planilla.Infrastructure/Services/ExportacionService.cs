@@ -6,12 +6,12 @@
 // ====================================================================
 
 using ClosedXML.Excel;
-using Planilla.Application.DTOs.Reportes;
+using Vorluno.Planilla.Application.DTOs.Reportes;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-namespace Planilla.Infrastructure.Services;
+namespace Vorluno.Planilla.Infrastructure.Services;
 
 /// <summary>
 /// Servicio para exportar reportes a diferentes formatos (Excel, PDF)

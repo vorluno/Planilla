@@ -1,4 +1,4 @@
-namespace Planilla.Application.DTOs;
+namespace Vorluno.Planilla.Application.DTOs;
 
 /// <summary>
 /// DTO para creación de solicitudes de anticipo.

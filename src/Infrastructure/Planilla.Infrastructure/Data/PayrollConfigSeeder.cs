@@ -9,9 +9,9 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Planilla.Domain.Entities;
+using Vorluno.Planilla.Domain.Entities;
 
-namespace Planilla.Infrastructure.Data;
+namespace Vorluno.Planilla.Infrastructure.Data;
 
 /// <summary>
 /// Seeder para cargar configuración inicial de planilla desde archivos JSON.

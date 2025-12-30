@@ -5,6 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+
+    <!-- Metadatos de Vorluno -->
+    <Company>Vorluno</Company>
+    <Product>Vorluno Planilla - VOR-PLAN</Product>
+    <Description>Unit tests for Vorluno Planilla Application layer</Description>
+    <Authors>Vorluno</Authors>
+    <Copyright>Copyright © Vorluno 2025</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core\Planilla.Application\Planilla.Application.csproj" />
+    <ProjectReference Include="..\..\src\Core\Planilla.Application\Vorluno.Planilla.Application.csproj" />
   </ItemGroup>
 
 </Project>

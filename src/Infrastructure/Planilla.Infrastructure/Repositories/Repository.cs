@@ -1,17 +1,17 @@
-Ôªøusing Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using Planilla.Application.Interfaces;
-using Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Planilla.Infrastructure.Repositories
+namespace Vorluno.Planilla.Infrastructure.Repositories
 {
     /// <summary>
-    /// Implementaci√≥n gen√©rica del patr√≥n de repositorio que encapsula la l√≥gica b√°sica de acceso a datos para cualquier entidad.
+    /// ImplementaciÛn genÈrica del patrÛn de repositorio que encapsula la lÛgica b·sica de acceso a datos para cualquier entidad.
     /// Utiliza Entity Framework Core para interactuar con la base de datos.
     /// </summary>
     /// <typeparam name="T">El tipo de la entidad para la cual este repositorio opera. Debe ser una clase.</typeparam>
@@ -22,14 +22,14 @@ namespace Planilla.Infrastructure.Repositories
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="Repository{T}"/>.
         /// </summary>
-        /// <param name="context">El contexto de la base de datos (DbContext) que ser√° utilizado para las operaciones de datos.</param>
+        /// <param name="context">El contexto de la base de datos (DbContext) que ser· utilizado para las operaciones de datos.</param>
         public Repository(ApplicationDbContext context)
         {
             _context = context;
         }
 
         /// <summary>
-        /// Obtiene una entidad por su identificador √∫nico (ID) de forma as√≠ncrona.
+        /// Obtiene una entidad por su identificador ˙nico (ID) de forma asÌncrona.
         /// </summary>
         /// <param name="id">El ID de la entidad a buscar.</param>
         /// <returns>Una tarea que retorna la entidad encontrada, o null si no se encuentra ninguna entidad con ese ID.</returns>
@@ -39,19 +39,19 @@ namespace Planilla.Infrastructure.Repositories
         }
 
         /// <summary>
-        /// Obtiene todas las entidades de un tipo espec√≠fico de forma as√≠ncrona.
+        /// Obtiene todas las entidades de un tipo especÌfico de forma asÌncrona.
         /// </summary>
-        /// <returns>Una tarea que retorna una colecci√≥n enumerable de todas las entidades.</returns>
+        /// <returns>Una tarea que retorna una colecciÛn enumerable de todas las entidades.</returns>
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
         /// <summary>
-        /// Agrega una nueva entidad a la base de datos de forma as√≠ncrona.
+        /// Agrega una nueva entidad a la base de datos de forma asÌncrona.
         /// </summary>
         /// <param name="entity">La entidad a agregar.</param>
-        /// <returns>Una tarea que representa la operaci√≥n as√≠ncrona.</returns>
+        /// <returns>Una tarea que representa la operaciÛn asÌncrona.</returns>
         public async Task AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
@@ -59,7 +59,7 @@ namespace Planilla.Infrastructure.Repositories
 
         /// <summary>
         /// Marca una entidad como eliminada en el contexto. 
-        /// Los cambios no se persistir√°n en la base de datos hasta que se llame a CompleteAsync() en la Unidad de Trabajo.
+        /// Los cambios no se persistir·n en la base de datos hasta que se llame a CompleteAsync() en la Unidad de Trabajo.
         /// </summary>
         /// <param name="entity">La entidad a eliminar.</param>
         public void Remove(T entity)
@@ -69,7 +69,7 @@ namespace Planilla.Infrastructure.Repositories
 
         /// <summary>
         /// Marca una entidad como modificada en el contexto.
-        /// Los cambios no se persistir√°n en la base de datos hasta que se llame a CompleteAsync() en la Unidad de Trabajo.
+        /// Los cambios no se persistir·n en la base de datos hasta que se llame a CompleteAsync() en la Unidad de Trabajo.
         /// </summary>
         /// <param name="entity">La entidad a actualizar.</param>
         public void Update(T entity)
@@ -81,7 +81,7 @@ namespace Planilla.Infrastructure.Repositories
         /// Obtiene una entidad por su ID con soporte para eager loading de entidades relacionadas.
         /// </summary>
         /// <param name="id">El ID de la entidad a buscar.</param>
-        /// <param name="include">Funci√≥n para incluir entidades relacionadas.</param>
+        /// <param name="include">FunciÛn para incluir entidades relacionadas.</param>
         /// <returns>La entidad encontrada, o null si no existe.</returns>
         public virtual async Task<T?> GetByIdAsync(
             int id,
@@ -94,14 +94,14 @@ namespace Planilla.Infrastructure.Repositories
                 query = include(query);
             }
 
-            // Buscar por ID usando reflexi√≥n para encontrar la propiedad Id
+            // Buscar por ID usando reflexiÛn para encontrar la propiedad Id
             var entityType = _context.Model.FindEntityType(typeof(T));
             var primaryKey = entityType?.FindPrimaryKey();
             var keyProperty = primaryKey?.Properties.FirstOrDefault();
 
             if (keyProperty == null)
             {
-                throw new InvalidOperationException($"No se encontr√≥ una clave primaria para el tipo {typeof(T).Name}");
+                throw new InvalidOperationException($"No se encontrÛ una clave primaria para el tipo {typeof(T).Name}");
             }
 
             var parameter = Expression.Parameter(typeof(T), "e");
@@ -116,10 +116,10 @@ namespace Planilla.Infrastructure.Repositories
         /// <summary>
         /// Obtiene todas las entidades con soporte para filtrado, eager loading y ordenamiento.
         /// </summary>
-        /// <param name="predicate">Expresi√≥n de filtrado opcional.</param>
-        /// <param name="include">Funci√≥n para incluir entidades relacionadas.</param>
-        /// <param name="orderBy">Funci√≥n para ordenar los resultados.</param>
-        /// <returns>Colecci√≥n de entidades que cumplen los criterios.</returns>
+        /// <param name="predicate">ExpresiÛn de filtrado opcional.</param>
+        /// <param name="include">FunciÛn para incluir entidades relacionadas.</param>
+        /// <param name="orderBy">FunciÛn para ordenar los resultados.</param>
+        /// <returns>ColecciÛn de entidades que cumplen los criterios.</returns>
         public virtual async Task<IEnumerable<T>> GetAllAsync(
             Expression<Func<T, bool>>? predicate = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
@@ -146,9 +146,9 @@ namespace Planilla.Infrastructure.Repositories
         }
 
         /// <summary>
-        /// Verifica si existe al menos una entidad que cumple la condici√≥n especificada.
+        /// Verifica si existe al menos una entidad que cumple la condiciÛn especificada.
         /// </summary>
-        /// <param name="predicate">Expresi√≥n de filtrado.</param>
+        /// <param name="predicate">ExpresiÛn de filtrado.</param>
         /// <returns>True si existe al menos una entidad, False en caso contrario.</returns>
         public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {

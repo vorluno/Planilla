@@ -6,10 +6,10 @@
 // Provee configuración de prueba con valores por defecto de CSS, SE, ISR
 // ====================================================================
 
-using Planilla.Application.DTOs;
-using Planilla.Application.Interfaces;
+using Vorluno.Planilla.Application.DTOs;
+using Vorluno.Planilla.Application.Interfaces;
 
-namespace Planilla.Application.Tests.Helpers;
+namespace Vorluno.Planilla.Application.Tests.Helpers;
 
 /// <summary>
 /// Mock de IPayrollConfigProvider para tests unitarios.

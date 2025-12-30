@@ -5,7 +5,7 @@
 // Descripción: Constantes de planilla (frecuencias de pago, etc.)
 // ====================================================================
 
-namespace Planilla.Application.Helpers;
+namespace Vorluno.Planilla.Application.Helpers;
 
 /// <summary>
 /// Constantes utilizadas en cálculos de planilla.

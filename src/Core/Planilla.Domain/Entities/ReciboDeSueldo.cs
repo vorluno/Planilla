@@ -1,14 +1,14 @@
-Ôªøusing System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 public class ReciboDeSueldo
 {
     [Key]
     public int Id { get; set; }
 
-    // Clave for√°nea que establece la relaci√≥n con la tabla Empleado
+    // Clave for·nea que establece la relaciÛn con la tabla Empleado
     [ForeignKey("Empleado")]
     public int EmpleadoId { get; set; }
 
@@ -27,7 +27,7 @@ public class ReciboDeSueldo
     [Column(TypeName = "decimal(18, 2)")]
     public decimal SalarioNeto { get; set; }
 
-    // Propiedad de navegaci√≥n para acceder al objeto Empleado completo
+    // Propiedad de navegaciÛn para acceder al objeto Empleado completo
     // La palabra clave 'virtual' permite a EF Core optimizar la carga (Lazy Loading).
     public virtual Empleado Empleado { get; set; } = null!;
 }

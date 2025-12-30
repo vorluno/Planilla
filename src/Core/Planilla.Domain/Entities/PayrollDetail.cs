@@ -11,7 +11,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 /// <summary>
 /// Detalle de planilla que representa el cálculo de nómina de un empleado en un período.

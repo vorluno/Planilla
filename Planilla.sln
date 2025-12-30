@@ -11,13 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{64030D1C-156C-4E25-8C5B-F7E3BED22B0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planilla.Web", "src\UI\Planilla.Web\Planilla.Web.csproj", "{D2E23CA7-B5FC-4CF6-B8EF-C3F6ED877536}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vorluno.Planilla.Web", "src\UI\Planilla.Web\Vorluno.Planilla.Web.csproj", "{D2E23CA7-B5FC-4CF6-B8EF-C3F6ED877536}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planilla.Domain", "src\Core\Planilla.Domain\Planilla.Domain.csproj", "{B79BB078-1F81-4822-A313-EF61DED501E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vorluno.Planilla.Domain", "src\Core\Planilla.Domain\Vorluno.Planilla.Domain.csproj", "{B79BB078-1F81-4822-A313-EF61DED501E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planilla.Application", "src\Core\Planilla.Application\Planilla.Application.csproj", "{DF73DCC2-F07C-4868-A90A-1B2CB1B03B89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vorluno.Planilla.Application", "src\Core\Planilla.Application\Vorluno.Planilla.Application.csproj", "{DF73DCC2-F07C-4868-A90A-1B2CB1B03B89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planilla.Infrastructure", "src\Infrastructure\Planilla.Infrastructure\Planilla.Infrastructure.csproj", "{5E023803-4157-4849-8DCC-A5DE8CB977C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vorluno.Planilla.Infrastructure", "src\Infrastructure\Planilla.Infrastructure\Vorluno.Planilla.Infrastructure.csproj", "{5E023803-4157-4849-8DCC-A5DE8CB977C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

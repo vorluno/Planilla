@@ -1,6 +1,6 @@
-using Planilla.Domain.Enums;
+using Vorluno.Planilla.Domain.Enums;
 
-namespace Planilla.Application.DTOs;
+namespace Vorluno.Planilla.Application.DTOs;
 
 /// <summary>
 /// DTO para visualización de deducciones fijas.

@@ -1,6 +1,6 @@
-using Planilla.Domain.Enums;
+using Vorluno.Planilla.Domain.Enums;
 
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 /// <summary>
 /// Representa una deducción fija que se aplica automáticamente al empleado en cada planilla.

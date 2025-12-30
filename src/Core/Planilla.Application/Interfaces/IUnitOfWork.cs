@@ -1,14 +1,14 @@
-ï»¿using Planilla.Domain.Entities;
+using Vorluno.Planilla.Domain.Entities;
 
-namespace Planilla.Application.Interfaces
+namespace Vorluno.Planilla.Application.Interfaces
 {
     /// <summary>
-    /// Define el contrato para el patrÃ³n de Unidad de Trabajo (Unit of Work).
+    /// Define el contrato para el patrón de Unidad de Trabajo (Unit of Work).
     /// Centraliza el acceso a todos los repositorios y gestiona las transacciones de la base de datos para asegurar la integridad de los datos. 
                 /// </summary>
                 /// <remarks>
-                /// Este patrÃ³n permite realizar una serie de operaciones en diferentes repositorios y luego confirmar todos los cambios
-                /// en una sola transacciÃ³n atÃ³mica mediante el mÃ©todo <see cref="CompleteAsync"/>.
+                /// Este patrón permite realizar una serie de operaciones en diferentes repositorios y luego confirmar todos los cambios
+                /// en una sola transacción atómica mediante el método <see cref="CompleteAsync"/>.
                 /// </remarks>
     public interface IUnitOfWork : IDisposable
     {
@@ -20,20 +20,20 @@ namespace Planilla.Application.Interfaces
         /// </value>
         IEmpleadoRepository Empleados { get; }
 
-        // AquÃ­ irÃ­an otros repositorios, como IReciboDeSueldoRepository
+        // Aquí irían otros repositorios, como IReciboDeSueldoRepository
 
         /// <summary>
-        /// Obtiene una instancia de repositorio genÃ©rico para cualquier entidad.
+        /// Obtiene una instancia de repositorio genérico para cualquier entidad.
         /// </summary>
         /// <typeparam name="T">El tipo de entidad.</typeparam>
         /// <returns>Una instancia del repositorio para la entidad especificada.</returns>
         IRepository<T> Repository<T>() where T : class;
 
         /// <summary>
-        /// Confirma y guarda todos los cambios realizados en el contexto de la base de datos de forma asÃ­ncrona.
+        /// Confirma y guarda todos los cambios realizados en el contexto de la base de datos de forma asíncrona.
         /// </summary>
         /// <returns>
-        /// Una tarea que representa la operaciÃ³n asÃ­ncrona. El resultado de la tarea contiene el nÃºmero de objetos de estado escritos en la base de datos.
+        /// Una tarea que representa la operación asíncrona. El resultado de la tarea contiene el número de objetos de estado escritos en la base de datos.
         /// </returns>
         Task<int> CompleteAsync();
     }

@@ -1,4 +1,4 @@
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 /// <summary>
 /// Representa un pago individual de una cuota de préstamo (historial).

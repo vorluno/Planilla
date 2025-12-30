@@ -1,4 +1,4 @@
-namespace Planilla.Domain.Enums;
+namespace Vorluno.Planilla.Domain.Enums;
 
 /// <summary>
 /// Tipos de horas extra según el Código de Trabajo de Panamá

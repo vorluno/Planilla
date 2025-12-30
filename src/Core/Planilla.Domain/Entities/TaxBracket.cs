@@ -8,7 +8,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 /// <summary>
 /// Representa un tramo del Impuesto Sobre la Renta (ISR) con su rango de ingresos

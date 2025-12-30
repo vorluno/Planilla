@@ -5,9 +5,9 @@
 // Descripción: Proveedor de configuración de planilla para servicios de cálculo
 // ====================================================================
 
-using Planilla.Application.DTOs;
+using Vorluno.Planilla.Application.DTOs;
 
-namespace Planilla.Application.Interfaces;
+namespace Vorluno.Planilla.Application.Interfaces;
 
 /// <summary>
 /// Interface para proveer configuración de tasas e impuestos de planilla.

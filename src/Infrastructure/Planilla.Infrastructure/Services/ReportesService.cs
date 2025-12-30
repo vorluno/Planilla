@@ -6,11 +6,11 @@
 // ====================================================================
 
 using Microsoft.EntityFrameworkCore;
-using Planilla.Application.DTOs.Reportes;
-using Planilla.Domain.Enums;
-using Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Application.DTOs.Reportes;
+using Vorluno.Planilla.Domain.Enums;
+using Vorluno.Planilla.Infrastructure.Data;
 
-namespace Planilla.Infrastructure.Services;
+namespace Vorluno.Planilla.Infrastructure.Services;
 
 /// <summary>
 /// Servicio para generar diferentes tipos de reportes de planilla

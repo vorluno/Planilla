@@ -12,13 +12,13 @@
 //   - Lanza PayrollConfigurationException si faltan brackets
 // ====================================================================
 
-using Planilla.Application.DTOs;
-using Planilla.Application.Exceptions;
-using Planilla.Application.Helpers;
-using Planilla.Application.Interfaces;
-using Planilla.Application.Results;
+using Vorluno.Planilla.Application.DTOs;
+using Vorluno.Planilla.Application.Exceptions;
+using Vorluno.Planilla.Application.Helpers;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Application.Results;
 
-namespace Planilla.Application.Services;
+namespace Vorluno.Planilla.Application.Services;
 
 /// <summary>
 /// Servicio de cálculo de Impuesto Sobre la Renta (ISR).

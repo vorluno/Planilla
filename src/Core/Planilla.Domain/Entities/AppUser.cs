@@ -1,11 +1,11 @@
-ï»¿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 // La palabra 'public' es crucial para que otros proyectos puedan ver esta clase.
 public class AppUser : IdentityUser
 {
-    // AquÃ­ puedes aÃ±adir propiedades personalizadas a tus usuarios en el futuro.
+    // Aquí puedes añadir propiedades personalizadas a tus usuarios en el futuro.
     // Por ejemplo:
     public string? NombreCompleto { get; set; }
 }

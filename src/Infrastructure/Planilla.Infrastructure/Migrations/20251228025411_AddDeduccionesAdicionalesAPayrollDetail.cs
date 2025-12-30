@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Planilla.Infrastructure.Migrations
+namespace Vorluno.Planilla.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddDeduccionesAdicionalesAPayrollDetail : Migration

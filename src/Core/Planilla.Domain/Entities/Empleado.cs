@@ -1,7 +1,7 @@
-ï»¿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 public class Empleado
 {
@@ -9,15 +9,15 @@ public class Empleado
     public int Id { get; set; }
 
     [Required(ErrorMessage = "El nombre es obligatorio.")]
-    [StringLength(100, ErrorMessage = "El nombre no puede tener mÃ¡s de 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "El nombre no puede tener más de 100 caracteres.")]
     public string Nombre { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "El apellido es obligatorio.")]
-    [StringLength(100, ErrorMessage = "El apellido no puede tener mÃ¡s de 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "El apellido no puede tener más de 100 caracteres.")]
     public string Apellido { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "El nÃºmero de identificaciÃ³n es obligatorio.")]
-    [StringLength(20, ErrorMessage = "El nÃºmero de identificaciÃ³n no puede tener mÃ¡s de 20 caracteres.")]
+    [Required(ErrorMessage = "El número de identificación es obligatorio.")]
+    [StringLength(20, ErrorMessage = "El número de identificación no puede tener más de 20 caracteres.")]
     public string NumeroIdentificacion { get; set; } = string.Empty;
 
     [Column(TypeName = "decimal(18, 2)")]
@@ -29,11 +29,11 @@ public class Empleado
     public bool EstaActivo { get; set; } = true;
 
     // ====================================================================
-    // Phase E: Campos para cÃ¡lculo de planilla
+    // Phase E: Campos para cálculo de planilla
     // ====================================================================
 
     /// <summary>
-    /// ID de compaÃ±Ã­a para multi-tenancy
+    /// ID de compañía para multi-tenancy
     /// </summary>
     public int CompanyId { get; set; } = 1;
 
@@ -43,17 +43,17 @@ public class Empleado
     public int? DepartamentoId { get; set; }
 
     /// <summary>
-    /// PosiciÃ³n o cargo del empleado (opcional)
+    /// Posición o cargo del empleado (opcional)
     /// </summary>
     public int? PosicionId { get; set; }
 
     /// <summary>
-    /// AÃ±os cotizados en CSS (determina tope CSS: 25 aÃ±os â†’ intermedio, 30 aÃ±os â†’ alto)
+    /// Años cotizados en CSS (determina tope CSS: 25 años ? intermedio, 30 años ? alto)
     /// </summary>
     public int YearsCotized { get; set; } = 0;
 
     /// <summary>
-    /// Salario promedio Ãºltimos 10 aÃ±os (para determinar tope CSS alto)
+    /// Salario promedio últimos 10 años (para determinar tope CSS alto)
     /// </summary>
     [Column(TypeName = "decimal(18, 2)")]
     public decimal AverageSalaryLast10Years { get; set; } = 0;
@@ -71,27 +71,27 @@ public class Empleado
     public string PayFrequency { get; set; } = "Quincenal";
 
     /// <summary>
-    /// NÃºmero de dependientes declarados (mÃ¡ximo 3 para deducciÃ³n ISR)
+    /// Número de dependientes declarados (máximo 3 para deducción ISR)
     /// </summary>
     public int Dependents { get; set; } = 0;
 
     /// <summary>
-    /// Indica si el empleado estÃ¡ sujeto a CSS
+    /// Indica si el empleado está sujeto a CSS
     /// </summary>
     public bool IsSubjectToCss { get; set; } = true;
 
     /// <summary>
-    /// Indica si el empleado estÃ¡ sujeto a Seguro Educativo
+    /// Indica si el empleado está sujeto a Seguro Educativo
     /// </summary>
     public bool IsSubjectToEducationalInsurance { get; set; } = true;
 
     /// <summary>
-    /// Indica si el empleado estÃ¡ sujeto a Impuesto Sobre la Renta (ISR)
+    /// Indica si el empleado está sujeto a Impuesto Sobre la Renta (ISR)
     /// </summary>
     public bool IsSubjectToIncomeTax { get; set; } = true;
 
-    // Propiedad de navegaciÃ³n: un empleado puede tener muchos recibos de sueldo.
-    // La clase ReciboDeSueldo ya estÃ¡ implementada y representa cada uno de ellos.
+    // Propiedad de navegación: un empleado puede tener muchos recibos de sueldo.
+    // La clase ReciboDeSueldo ya está implementada y representa cada uno de ellos.
     public virtual ICollection<ReciboDeSueldo> RecibosDeSueldo { get; set; } = new List<ReciboDeSueldo>();
 
     // Navigation properties para Departamento y Posicion

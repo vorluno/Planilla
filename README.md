@@ -1,6 +1,14 @@
-# Planilla - Sistema de Gestión de Nómina para Panamá
+# Vorluno Planilla (VOR-PLAN)
 
-Sistema completo de gestión de nómina empresarial con cumplimiento total de las regulaciones laborales de Panamá (CSS, Seguro Educativo, ISR). Desarrollado con Clean Architecture y las mejores prácticas de .NET.
+Sistema empresarial de gestión de nómina para Panamá desarrollado por Vorluno con cumplimiento total de las regulaciones laborales (CSS, Seguro Educativo, ISR).
+
+## Información del Proyecto
+
+- **Identificador**: VOR-PLAN
+- **Producto**: Vorluno Planilla
+- **Repositorio**: `vorluno/planilla`
+- **Dominio**: `planilla.vorluno.dev`
+- **Stack**: .NET 9.0, ASP.NET Core, Entity Framework Core, React 19
 
 ## Características Principales
 
@@ -19,42 +27,23 @@ Sistema completo de gestión de nómina empresarial con cumplimiento total de la
 - **Reportes**: Generación de comprobantes de pago, reportes CSS, ISR y más
 - **Frontend Moderno**: SPA React 19 con Tailwind CSS
 
-## Stack Técnico
-
-### Backend
-- **.NET 9** - Framework principal
-- **ASP.NET Core** - Web API RESTful
-- **Entity Framework Core 9** - ORM para SQL Server
-- **ASP.NET Core Identity** - Autenticación y autorización
-- **xUnit + FluentAssertions + Moq** - Testing
-
-### Frontend
-- **React 19** - Biblioteca UI
-- **Vite** - Build tool y dev server
-- **Tailwind CSS** - Framework CSS utility-first
-- **Axios** - Cliente HTTP
-
-### Base de Datos
-- **SQL Server** - Base de datos principal
-- **Migraciones EF Core** - Control de versiones de DB
-
 ## Arquitectura
 
 El proyecto sigue los principios de **Clean Architecture**:
 
 ```
-Planilla/
-├── src/
-│   ├── Core/
-│   │   ├── Planilla.Domain/           # Entidades, enums, value objects
-│   │   └── Planilla.Application/      # Servicios, DTOs, interfaces, lógica de negocio
-│   ├── Infrastructure/
-│   │   └── Planilla.Infrastructure/   # EF Core, repositorios, servicios externos
-│   └── UI/
-│       └── Planilla.Web/              # API Controllers, Program.cs, React SPA
-│           └── ClientApp/             # Aplicación React
-├── tests/                             # Tests unitarios e integración
-└── docs/                              # Documentación del proyecto
+src/
+├── Core/
+│   ├── Vorluno.Planilla.Domain/         # Entidades, enums, value objects
+│   └── Vorluno.Planilla.Application/    # Servicios, DTOs, interfaces, lógica de negocio
+├── Infrastructure/
+│   └── Vorluno.Planilla.Infrastructure/ # EF Core, repositorios, servicios externos
+└── UI/
+    └── Vorluno.Planilla.Web/           # API Controllers, Program.cs, React SPA
+        └── ClientApp/                   # Aplicación React
+
+tests/
+└── Vorluno.Planilla.Application.Tests/  # Tests unitarios e integración
 ```
 
 ### Capas y Responsabilidades
@@ -63,6 +52,66 @@ Planilla/
 - **Application**: Servicios de aplicación, DTOs, interfaces, validaciones, lógica de negocio
 - **Infrastructure**: Implementación de repositorios, EF Core, servicios externos, acceso a datos
 - **Web**: Controllers API, configuración ASP.NET, hosting de SPA React
+
+## Convenciones de Vorluno
+
+### Subdominios
+```
+<app>.vorluno.dev
+planilla.vorluno.dev
+menu.vorluno.dev
+docs.vorluno.dev
+```
+
+### Repositorios GitHub
+```
+vorluno/<app>
+vorluno/planilla
+vorluno/menu
+vorluno/core360-integrations
+```
+
+### Identificadores Internos
+```
+VOR-<APP>
+VOR-PLAN (Planilla)
+VOR-MENU (Menu)
+VOR-CRM (CRM)
+```
+
+### Namespaces C#/.NET
+```csharp
+Vorluno.<App>.<Layer>
+
+Vorluno.Planilla.Domain
+Vorluno.Planilla.Application
+Vorluno.Planilla.Infrastructure
+Vorluno.Planilla.Web
+```
+
+## Stack Técnico
+
+### Backend
+- **.NET 9** - Framework principal
+- **ASP.NET Core** - Web API RESTful
+- **Entity Framework Core 9** - ORM para SQL Server
+- **ASP.NET Core Identity** - Autenticación y autorización
+- **AutoMapper** - Mapeo objeto-objeto
+- **xUnit + FluentAssertions + Moq** - Testing
+
+### Frontend
+- **React 19** - Biblioteca UI
+- **Vite** - Build tool y dev server
+- **Tailwind CSS** - Framework CSS utility-first
+- **Axios** - Cliente HTTP
+
+### Reportes y Exportación
+- **ClosedXML** - Exportación a Excel
+- **QuestPDF** - Generación de PDFs
+
+### Base de Datos
+- **SQL Server** - Base de datos principal
+- **Migraciones EF Core** - Control de versiones de DB
 
 ## Requisitos Previos
 
@@ -76,8 +125,8 @@ Planilla/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/swlarot/Planilla.git
-cd Planilla
+git clone https://github.com/vorluno/planilla.git
+cd planilla
 ```
 
 ### 2. Configurar la base de datos
@@ -87,7 +136,7 @@ Actualiza la cadena de conexión en `src/UI/Planilla.Web/appsettings.json`:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=PlanillaDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=VorlanoPlanillaDb;Trusted_Connection=True;MultipleActiveResultSets=true"
   }
 }
 ```
@@ -96,7 +145,7 @@ Actualiza la cadena de conexión en `src/UI/Planilla.Web/appsettings.json`:
 
 ```bash
 cd src/UI/Planilla.Web
-dotnet ef database update --project ../Infrastructure/Planilla.Infrastructure
+dotnet ef database update --project ../../Infrastructure/Planilla.Infrastructure
 ```
 
 ### 4. Instalar dependencias del frontend
@@ -123,6 +172,7 @@ npm run dev
 La aplicación estará disponible en:
 - API: `https://localhost:7105`
 - Frontend: `http://localhost:5173`
+- Swagger UI: `https://localhost:7105/swagger`
 
 ## Uso
 
@@ -130,13 +180,14 @@ La aplicación estará disponible en:
 
 ```bash
 # Build completo
-dotnet build Planilla.sln
+dotnet build
 
 # Ejecutar tests
 dotnet test
 
 # Crear nueva migración
-dotnet ef migrations add NombreMigracion --project src/Infrastructure/Planilla.Infrastructure --startup-project src/UI/Planilla.Web
+cd src/UI/Planilla.Web
+dotnet ef migrations add NombreMigracion --project ../../Infrastructure/Planilla.Infrastructure
 
 # Build del frontend para producción
 cd src/UI/Planilla.Web/ClientApp
@@ -154,6 +205,7 @@ npm run build
 - `POST /api/anticipos` - Crear anticipos
 - `POST /api/prestamos` - Crear préstamos
 - `POST /api/vacaciones` - Solicitar vacaciones
+- `GET /api/reportes/*` - Generación de reportes
 
 ## Convenciones de Desarrollo
 
@@ -214,10 +266,11 @@ npm run build
 - [x] Conceptos de nómina (horas extra, anticipos, préstamos, vacaciones, ausencias)
 - [x] Migraciones EF Core completas
 - [x] Frontend React con Tailwind CSS
+- [x] Branding y namespaces Vorluno
 
 ### En Desarrollo
 
-- [ ] Tests unitarios completos (39 tests planeados)
+- [ ] Tests unitarios completos
 - [ ] Endpoints de workflow de nómina
 - [ ] Reportes y comprobantes PDF
 - [ ] UI de gestión de conceptos
@@ -240,23 +293,14 @@ npm run build
 - [docs/PHASES.md](./docs/PHASES.md) - Plan de implementación por fases
 - [docs/CORE360_EXTRACTION.md](./docs/CORE360_EXTRACTION.md) - Documentación de referencia del sistema legacy
 
-## Contribuir
-
-1. Fork el proyecto
-2. Crea un branch para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add: amazing feature'`)
-4. Push al branch (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
 ## Licencia
 
-Este proyecto es privado y propietario.
+Copyright © Vorluno 2025. Todos los derechos reservados.
 
 ## Contacto
 
-Proyecto desarrollado por SWLAROT
-
-GitHub: [@swlarot](https://github.com/swlarot)
+Para más información sobre Vorluno y nuestros productos:
+- GitHub: https://github.com/vorluno
 
 ---
 

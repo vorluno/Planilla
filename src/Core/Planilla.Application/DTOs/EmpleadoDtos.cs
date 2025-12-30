@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace Planilla.Application.DTOs
+namespace Vorluno.Planilla.Application.DTOs
 {
     /// <summary>
     /// DTO para visualizar los datos de un empleado. Contiene los campos seguros para mostrar al exterior.

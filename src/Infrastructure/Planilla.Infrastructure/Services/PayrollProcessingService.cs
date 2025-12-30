@@ -7,13 +7,13 @@
 // ====================================================================
 
 using Microsoft.EntityFrameworkCore;
-using Planilla.Application.Services;
-using Planilla.Domain.Entities;
-using Planilla.Domain.Enums;
-using Planilla.Infrastructure.Data;
-using Planilla.Infrastructure.Services;
+using Vorluno.Planilla.Application.Services;
+using Vorluno.Planilla.Domain.Entities;
+using Vorluno.Planilla.Domain.Enums;
+using Vorluno.Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Infrastructure.Services;
 
-namespace Planilla.Infrastructure.Services;
+namespace Vorluno.Planilla.Infrastructure.Services;
 
 /// <summary>
 /// Servicio que procesa planillas completas incluyendo deducciones adicionales

@@ -10,9 +10,9 @@
 // ====================================================================
 
 using System.ComponentModel.DataAnnotations;
-using Planilla.Domain.Enums;
+using Vorluno.Planilla.Domain.Enums;
 
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 /// <summary>
 /// Encabezado de planilla que representa un período de pago completo.

@@ -7,11 +7,11 @@
 // ====================================================================
 
 using FluentAssertions;
-using Planilla.Application.Exceptions;
-using Planilla.Application.Services;
-using Planilla.Application.Tests.Helpers;
+using Vorluno.Planilla.Application.Exceptions;
+using Vorluno.Planilla.Application.Services;
+using Vorluno.Planilla.Application.Tests.Helpers;
 
-namespace Planilla.Application.Tests.Services;
+namespace Vorluno.Planilla.Application.Tests.Services;
 
 /// <summary>
 /// Tests unitarios del servicio de Impuesto Sobre la Renta (ISR).

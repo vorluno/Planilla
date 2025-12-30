@@ -6,11 +6,11 @@
 // ====================================================================
 
 using Microsoft.EntityFrameworkCore;
-using Planilla.Domain.Entities;
-using Planilla.Domain.Enums;
-using Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Domain.Entities;
+using Vorluno.Planilla.Domain.Enums;
+using Vorluno.Planilla.Infrastructure.Data;
 
-namespace Planilla.Infrastructure.Services;
+namespace Vorluno.Planilla.Infrastructure.Services;
 
 /// <summary>
 /// Servicio para calcular montos relacionados con asistencia del empleado:

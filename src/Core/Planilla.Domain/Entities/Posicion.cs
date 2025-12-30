@@ -1,4 +1,4 @@
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 /// <summary>
 /// Nivel de riesgo profesional de una posición (afecta tasa CSS Riesgo Profesional)

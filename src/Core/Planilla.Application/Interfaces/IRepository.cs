@@ -1,41 +1,41 @@
-Ôªøusing System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Planilla.Application.Interfaces
+namespace Vorluno.Planilla.Application.Interfaces
 {
     /// <summary>
-    /// Define un contrato gen√©rico para el patr√≥n de repositorio, abstrayendo las operaciones de persistencia de datos.
-    /// NOTA: Este es el contrato b√°sico. Para operaciones avanzadas (includes, filtros), use la implementaci√≥n concreta Repository<T>.
+    /// Define un contrato genÈrico para el patrÛn de repositorio, abstrayendo las operaciones de persistencia de datos.
+    /// NOTA: Este es el contrato b·sico. Para operaciones avanzadas (includes, filtros), use la implementaciÛn concreta Repository<T>.
     /// </summary>
     /// <typeparam name="T">El tipo de la entidad para la cual este repositorio opera. Debe ser una clase.</typeparam>
     public interface IRepository<T> where T : class
     {
         /// <summary>
-        /// Obtiene una entidad por su identificador √∫nico (ID) de forma as√≠ncrona.
+        /// Obtiene una entidad por su identificador ˙nico (ID) de forma asÌncrona.
         /// </summary>
         /// <param name="id">El ID de la entidad a buscar.</param>
         /// <returns>Una tarea que retorna la entidad encontrada, o null si no se encuentra.</returns>
         Task<T?> GetByIdAsync(int id);
 
         /// <summary>
-        /// Obtiene todas las entidades de un tipo espec√≠fico de forma as√≠ncrona.
+        /// Obtiene todas las entidades de un tipo especÌfico de forma asÌncrona.
         /// </summary>
-        /// <returns>Una tarea que retorna una colecci√≥n de todas las entidades.</returns>
+        /// <returns>Una tarea que retorna una colecciÛn de todas las entidades.</returns>
         Task<IEnumerable<T>> GetAllAsync();
 
         /// <summary>
-        /// Agrega una nueva entidad al conjunto de datos de forma as√≠ncrona.
+        /// Agrega una nueva entidad al conjunto de datos de forma asÌncrona.
         /// </summary>
         /// <param name="entity">La entidad a agregar.</param>
-        /// <returns>Una tarea que representa la operaci√≥n as√≠ncrona.</returns>
+        /// <returns>Una tarea que representa la operaciÛn asÌncrona.</returns>
         Task AddAsync(T entity);
 
         /// <summary>
         /// Marca una entidad existente como modificada.
         /// </summary>
         /// <remarks>
-        /// Esta operaci√≥n solo marca el estado de la entidad en el rastreador de cambios.
-        /// Los cambios se persistir√°n en la base de datos al llamar a CompleteAsync() en la Unidad de Trabajo.
+        /// Esta operaciÛn solo marca el estado de la entidad en el rastreador de cambios.
+        /// Los cambios se persistir·n en la base de datos al llamar a CompleteAsync() en la Unidad de Trabajo.
         /// </remarks>
         /// <param name="entity">La entidad a actualizar.</param>
         void Update(T entity);
@@ -44,8 +44,8 @@ namespace Planilla.Application.Interfaces
         /// Marca una entidad existente como eliminada.
         /// </summary>
         /// <remarks>
-        /// Esta operaci√≥n solo marca el estado de la entidad en el rastreador de cambios.
-        /// Los cambios se persistir√°n en la base de datos al llamar a CompleteAsync() en la Unidad de Trabajo.
+        /// Esta operaciÛn solo marca el estado de la entidad en el rastreador de cambios.
+        /// Los cambios se persistir·n en la base de datos al llamar a CompleteAsync() en la Unidad de Trabajo.
         /// </remarks>
         /// <param name="entity">La entidad a eliminar.</param>
         void Remove(T entity);

@@ -1,10 +1,10 @@
 // RISK: Removing Blazor components - converting to Web API + React SPA architecture
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Planilla.Infrastructure.Data;
-using Planilla.Domain.Entities;
-using Planilla.Web.Extensions;
-using Planilla.Application.Mappings;
+using Vorluno.Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Domain.Entities;
+using Vorluno.Planilla.Web.Extensions;
+using Vorluno.Planilla.Application.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 

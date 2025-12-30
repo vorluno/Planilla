@@ -1,4 +1,4 @@
-namespace Planilla.Domain.Entities;
+namespace Vorluno.Planilla.Domain.Entities;
 
 /// <summary>
 /// Representa el saldo de días de vacaciones de un empleado

@@ -1,4 +1,4 @@
-namespace Planilla.Domain.Enums;
+namespace Vorluno.Planilla.Domain.Enums;
 
 /// <summary>
 /// Estados posibles de un préstamo.

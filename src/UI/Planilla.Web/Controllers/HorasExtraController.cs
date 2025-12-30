@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Planilla.Application.DTOs;
-using Planilla.Application.Interfaces;
-using Planilla.Domain.Entities;
-using Planilla.Domain.Enums;
-using Planilla.Infrastructure.Data;
+using Vorluno.Planilla.Application.DTOs;
+using Vorluno.Planilla.Application.Interfaces;
+using Vorluno.Planilla.Domain.Entities;
+using Vorluno.Planilla.Domain.Enums;
+using Vorluno.Planilla.Infrastructure.Data;
 
-namespace Planilla.Web.Controllers;
+namespace Vorluno.Planilla.Web.Controllers;
 
 /// <summary>
 /// Controlador para gestionar horas extra de empleados

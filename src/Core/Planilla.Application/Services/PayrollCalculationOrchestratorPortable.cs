@@ -6,9 +6,9 @@
 // Combina CSS + Seguro Educativo + ISR en un solo resultado
 // ====================================================================
 
-using Planilla.Application.Results;
+using Vorluno.Planilla.Application.Results;
 
-namespace Planilla.Application.Services;
+namespace Vorluno.Planilla.Application.Services;
 
 /// <summary>
 /// Orquestador que calcula la planilla completa de un empleado.

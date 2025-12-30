@@ -6,7 +6,7 @@
 // Decisión SGPE: MidpointRounding.AwayFromZero (redondea 0.5 hacia arriba)
 // ====================================================================
 
-namespace Planilla.Application.Helpers;
+namespace Vorluno.Planilla.Application.Helpers;
 
 /// <summary>
 /// Política de redondeo centralizada para cálculos de planilla.
