@@ -1,5 +1,11 @@
 # Vorluno Planilla (VOR-PLAN)
 
+[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Entity Framework](https://img.shields.io/badge/Entity%20Framework-Core%209-512BD4)](https://docs.microsoft.com/en-us/ef/core/)
+[![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
+[![Vorluno](https://img.shields.io/badge/Vorluno-VOR--PLAN-0066cc)](https://github.com/vorluno)
+
 Sistema empresarial de gestión de nómina para Panamá desarrollado por Vorluno con cumplimiento total de las regulaciones laborales (CSS, Seguro Educativo, ISR).
 
 ## Información del Proyecto
