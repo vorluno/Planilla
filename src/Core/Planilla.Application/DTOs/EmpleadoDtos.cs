@@ -36,7 +36,10 @@ namespace Vorluno.Planilla.Application.DTOs
         decimal CssRiskPercentage = 0.56m,
         // === Pay Period numeric value para edición ===
         int PayPeriodTypeValue = 2,
-        TipoContratoDuracion TipoContrato = TipoContratoDuracion.Indefinido
+        TipoContratoDuracion TipoContrato = TipoContratoDuracion.Indefinido,
+
+        /// <summary>Gasto de representación mensual. Tributa con tarifa propia.</summary>
+        decimal GastoRepresentacionMensual = 0m
     );
 
     /// <summary>
@@ -86,7 +89,14 @@ namespace Vorluno.Planilla.Application.DTOs
         TipoContratoDuracion TipoContrato = TipoContratoDuracion.Indefinido,
 
         // === Fecha de Contratación (capturada en el alta) ===
-        DateTime? FechaContratacion = null
+        DateTime? FechaContratacion = null,
+
+        // === Gasto de representación ===
+        // Remuneración adicional al sueldo: para la Caja de Seguro Social es salario
+        // (Ley 51 de 2005, Art. 91 num. 6), pero la renta lo grava con tarifa propia.
+        // Por ley no puede exceder el salario del trabajador.
+        [Range(0, double.MaxValue)]
+        decimal GastoRepresentacionMensual = 0m
     );
 
     /// <summary>
@@ -134,7 +144,11 @@ namespace Vorluno.Planilla.Application.DTOs
 
         // === Fecha de Contratación (editable) ===
         DateTime? FechaContratacion = null,
-        TipoContratoDuracion TipoContrato = TipoContratoDuracion.Indefinido
+        TipoContratoDuracion TipoContrato = TipoContratoDuracion.Indefinido,
+
+        // === Gasto de representación ===
+        [Range(0, double.MaxValue)]
+        decimal GastoRepresentacionMensual = 0m
     );
 
     /// <summary>

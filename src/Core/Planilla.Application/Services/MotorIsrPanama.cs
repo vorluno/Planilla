@@ -36,8 +36,20 @@ public sealed class AcumuladoIsr
     public decimal IsrRegularProcesado { get; init; }
     public decimal IsrDecimoProcesado { get; init; }
 
+    // Gastos de representación: van por cuenta aparte porque tienen tarifa propia
+    // y no entran en la proyección del salario.
+    public decimal GastoRepresentacionInicial { get; init; }
+    public decimal GastoRepresentacionProcesado { get; init; }
+    public decimal IsrGastoRepresentacionInicial { get; init; }
+    public decimal IsrGastoRepresentacionProcesado { get; init; }
+
     public decimal IngresoGravableTotal => IngresoGravableInicial + IngresoGravableProcesado;
     public decimal DecimoTotal => DecimoInicial + DecimoProcesado;
+    public decimal GastoRepresentacionTotal => GastoRepresentacionInicial + GastoRepresentacionProcesado;
+
+    public decimal IsrGastoRepresentacionTotal =>
+        IsrGastoRepresentacionInicial + IsrGastoRepresentacionProcesado;
+
     public decimal IsrRetenidoTotal => IsrRetenidoInicial + IsrRegularProcesado + IsrDecimoProcesado;
 }
 
@@ -85,6 +97,22 @@ public sealed class ResultadoIsr
 
     /// <summary>Exceso retenido. Solo para control interno; no se muestra en el comprobante.</summary>
     public decimal SaldoFavorEmpleado { get; init; }
+
+    // ========== Gastos de representación (tarifa propia) ==========
+
+    public decimal GastoRepresentacionPeriodo { get; init; }
+    public decimal GastoRepresentacionAcumulado { get; init; }
+
+    /// <summary>Retención sobre gastos de representación de esta corrida.</summary>
+    public decimal IsrGastoRepresentacionPeriodo { get; init; }
+
+    public decimal IsrGastoRepresentacionAcumulado { get; init; }
+
+    /// <summary>
+    /// Lo que se descuenta en total en esta corrida: el ISR del salario más el de
+    /// los gastos de representación. Es el número que va al comprobante.
+    /// </summary>
+    public decimal IsrTotalDescontarPeriodo => IsrDescontarPeriodo + IsrGastoRepresentacionPeriodo;
 }
 
 /// <summary>Motor de ISR acumulativo con regularización por corrida.</summary>
@@ -104,6 +132,32 @@ public static class MotorIsrPanama
         if (rentaNetaGravable <= Limite15)
             return Redondear((rentaNetaGravable - LimiteExento) * Tasa15);
         return Redondear(IsrHasta50000 + (rentaNetaGravable - Limite15) * Tasa25);
+    }
+
+    // Tarifa de gastos de representación (Código Fiscal Art. 732, reformado por la
+    // Ley 6 de 2005 y vigente en su forma actual desde julio de 2010).
+    private const decimal GastoRepresentacionTramo1 = 25_000m;
+    private const decimal GastoRepresentacionTasa1 = 0.10m;
+    private const decimal GastoRepresentacionTasa2 = 0.15m;
+    private const decimal GastoRepresentacionImpuestoTramo1 = 2_500m;  // 25,000 x 10%
+
+    /// <summary>
+    /// Impuesto anual sobre gastos de representación: 10% hasta B/.25,000 y, de ahí
+    /// en adelante, B/.2,500 más 15% sobre el excedente.
+    ///
+    /// No comparte tarifa ni deducciones con el salario: es una retención propia
+    /// sobre lo efectivamente pagado en el año, sin proyección. Por eso tampoco
+    /// entra en la renta neta gravable del Art. 700.
+    /// </summary>
+    public static decimal CalcularIsrGastosRepresentacion(decimal acumuladoAnual)
+    {
+        if (acumuladoAnual <= 0m) return 0m;
+
+        if (acumuladoAnual <= GastoRepresentacionTramo1)
+            return Redondear(acumuladoAnual * GastoRepresentacionTasa1);
+
+        return Redondear(GastoRepresentacionImpuestoTramo1
+            + (acumuladoAnual - GastoRepresentacionTramo1) * GastoRepresentacionTasa2);
     }
 
     /// <summary>
@@ -147,6 +201,10 @@ public static class MotorIsrPanama
             .Where(m => m.Tratamiento == TratamientoIsr.DecimoTercerMes)
             .Sum(m => m.Monto);
 
+        var gastoRepresentacionPeriodo = movimientos
+            .Where(m => m.Tratamiento == TratamientoIsr.GastoRepresentacion)
+            .Sum(m => m.Monto);
+
         var ingresoGravableAcumulado = corrida.AcumuladoAnterior.IngresoGravableTotal + ingresoGravablePeriodo;
         var decimoAcumulado = corrida.AcumuladoAnterior.DecimoTotal + decimoPeriodo;
 
@@ -178,6 +236,14 @@ public static class MotorIsrPanama
         var proporcion = periodoEquivalente / periodosEquivalentes;
         var isrDebidoAcumulado = Redondear(isrAnual * proporcion);
 
+        // Gastos de representación: cuenta aparte. La retención del período es lo que
+        // falta para completar el impuesto del acumulado del año, así que un pago que
+        // cruza los 25,000 se parte solo entre el 10% y el 15%.
+        var grAcumulado = corrida.AcumuladoAnterior.GastoRepresentacionTotal + gastoRepresentacionPeriodo;
+        var isrGrAcumulado = CalcularIsrGastosRepresentacion(grAcumulado);
+        var isrGrAnterior = corrida.AcumuladoAnterior.IsrGastoRepresentacionTotal;
+        var isrGrPeriodo = Math.Max(0m, isrGrAcumulado - isrGrAnterior);
+
         var isrInicial = corrida.AcumuladoAnterior.IsrRetenidoInicial;
         var isrSistemaAnterior = corrida.AcumuladoAnterior.IsrRegularProcesado
                                + corrida.AcumuladoAnterior.IsrDecimoProcesado;
@@ -206,7 +272,11 @@ public static class MotorIsrPanama
             IsrDescontarPeriodo = Redondear(isrDescontar),
             IsrRetenidoTotalNuevo = Redondear(isrTotalAnterior + isrDescontar),
             SaldoFavorFisco = Redondear(saldoFavorFisco),
-            SaldoFavorEmpleado = Redondear(saldoFavorEmpleado)
+            SaldoFavorEmpleado = Redondear(saldoFavorEmpleado),
+            GastoRepresentacionPeriodo = Redondear(gastoRepresentacionPeriodo),
+            GastoRepresentacionAcumulado = Redondear(grAcumulado),
+            IsrGastoRepresentacionPeriodo = Redondear(isrGrPeriodo),
+            IsrGastoRepresentacionAcumulado = Redondear(isrGrAcumulado)
         };
     }
 

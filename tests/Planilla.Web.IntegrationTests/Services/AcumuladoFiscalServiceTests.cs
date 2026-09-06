@@ -40,7 +40,9 @@ public class AcumuladoFiscalServiceTests
         decimal css,
         decimal isr,
         PayrollStatus estado = PayrollStatus.Approved,
-        int empleadoId = EmpleadoId)
+        int empleadoId = EmpleadoId,
+        decimal gastoRepresentacion = 0m,
+        decimal isrGastoRepresentacion = 0m)
     {
         db.PayrollHeaders.Add(new PayrollHeader
         {
@@ -62,7 +64,9 @@ public class AcumuladoFiscalServiceTests
             EmpleadoId = empleadoId,
             GrossPay = bruto,
             CssEmployee = css,
-            IncomeTax = isr
+            IncomeTax = isr,
+            GastoRepresentacion = gastoRepresentacion,
+            IsrGastoRepresentacion = isrGastoRepresentacion
         });
     }
 
@@ -303,6 +307,69 @@ public class AcumuladoFiscalServiceTests
         return n % 2 == 1
             ? new DateTime(Anio, mes, 15)
             : new DateTime(Anio, mes, DateTime.DaysInMonth(Anio, mes));
+    }
+
+
+    [Fact]
+    public async Task GastoDeRepresentacion__SaleDeLaBaseDelSalarioConSuParteDelSeguroSocial()
+    {
+        using var db = NuevoContexto();
+
+        // Bruto 1,500 = 1,000 de salario + 500 de gasto de representación.
+        // El Seguro Social corre sobre los 1,500 (para la CSS todo es salario):
+        // 1,500 x 9.75% = 146.25, de los cuales 97.50 tocan al salario.
+        // ISR total 120 = 70 del salario + 50 del gasto de representación.
+        SembrarPlanilla(db, 1, new DateTime(Anio, 1, 15),
+            bruto: 1500m, css: 146.25m, isr: 120m,
+            gastoRepresentacion: 500m, isrGastoRepresentacion: 50m);
+        await db.SaveChangesAsync();
+
+        var acumulado = await new AcumuladoFiscalService(db).ObtenerAcumuladoAsync(EmpleadoId, Anio);
+
+        acumulado.IngresoGravableTotal.Should().Be(902.50m,
+            "la base del salario son sus 1,000 menos los 97.50 de Seguro Social que le tocan");
+        acumulado.GastoRepresentacionTotal.Should().Be(500m,
+            "el gasto de representación va por cuenta aparte, sin restarle nada");
+        acumulado.IsrRetenidoTotal.Should().Be(70m,
+            "del ISR guardado, los 50 del gasto de representación no cuentan como retención del salario");
+        acumulado.IsrGastoRepresentacionTotal.Should().Be(50m);
+    }
+
+    [Fact]
+    public async Task FichaAnual__SeparaElGastoDeRepresentacionYLoGravaConSuPropiaTarifa()
+    {
+        using var db = NuevoContexto();
+
+        db.Empleados.Add(new Empleado
+        {
+            Id = EmpleadoId,
+            TenantId = TenantId,
+            Nombre = "Luis",
+            Apellido = "Gomez",
+            NumeroIdentificacion = "8-111-1111",
+            PayPeriodType = PayPeriodType.Mensual
+        });
+
+        // Doce meses de 2,000 de salario más 1,000 de gasto de representación.
+        // Sin Seguro Social para poder seguir los números a mano.
+        for (var mes = 1; mes <= 12; mes++)
+        {
+            SembrarPlanilla(db, mes, new DateTime(Anio, mes, 28),
+                bruto: 3_000m, css: 0m, isr: 100m,
+                gastoRepresentacion: 1_000m, isrGastoRepresentacion: 100m);
+        }
+        await db.SaveChangesAsync();
+
+        var ficha = await new AcumuladoFiscalService(db).ObtenerFichaAnualAsync(EmpleadoId, Anio);
+
+        ficha.Should().NotBeNull();
+        ficha!.TotalGravable.Should().Be(24_000m, "solo el salario");
+        ficha.TotalGastoRepresentacion.Should().Be(12_000m);
+        ficha.TotalIsrGastoRepresentacion.Should().Be(1_200m);
+
+        // Salario: (24,000 - 11,000) x 15% = 1,950.
+        // Gasto de representación: 12,000 x 10% = 1,200. Cada uno con su tarifa.
+        ficha.IsrDelAnioSegunIngresoReal.Should().Be(1_950m + 1_200m);
     }
 
     private class BypassTenantContext : ITenantContext

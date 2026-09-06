@@ -49,6 +49,18 @@ public class AcumuladoFiscalEmpleado : ITenantEntity
     [Column(TypeName = "decimal(18, 2)")]
     public decimal IsrRetenidoInicial { get; set; }
 
+    /// <summary>Gastos de representación ya pagados en el año al migrar.</summary>
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal GastoRepresentacionInicial { get; set; }
+
+    /// <summary>
+    /// Impuesto ya retenido sobre esos gastos de representación. Importa porque su
+    /// tarifa es por tramos: sin este dato, el primer tramo del 10% se aplicaría
+    /// de nuevo sobre dinero que ya lo agotó.
+    /// </summary>
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal IsrGastoRepresentacionInicial { get; set; }
+
     // ========== ACUMULADOS GENERADOS POR EL SISTEMA ==========
 
     [Column(TypeName = "decimal(18, 2)")]
@@ -75,6 +87,12 @@ public class AcumuladoFiscalEmpleado : ITenantEntity
     /// <summary>Número de corridas del empleado en el año. Es el divisor de la proyección.</summary>
     public int PeriodosProcesados { get; set; }
 
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal GastoRepresentacionProcesado { get; set; }
+
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal IsrGastoRepresentacionProcesado { get; set; }
+
     // ========== CALCULADOS ==========
 
     [NotMapped]
@@ -85,6 +103,13 @@ public class AcumuladoFiscalEmpleado : ITenantEntity
 
     [NotMapped]
     public decimal IsrRetenidoTotal => IsrRetenidoInicial + IsrRegularProcesado + IsrDecimoProcesado;
+
+    [NotMapped]
+    public decimal GastoRepresentacionTotal => GastoRepresentacionInicial + GastoRepresentacionProcesado;
+
+    [NotMapped]
+    public decimal IsrGastoRepresentacionTotal =>
+        IsrGastoRepresentacionInicial + IsrGastoRepresentacionProcesado;
 
     // ========== AUDITORÍA ==========
 

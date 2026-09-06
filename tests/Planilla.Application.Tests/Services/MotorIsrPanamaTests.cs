@@ -315,4 +315,144 @@ public class MotorIsrPanamaTests
         r.IngresoAnualProyectado.Should().BeApproximately(13_000m, 1m);
     }
 
+
+    // ====================================================================
+    // Gastos de representación
+    //
+    // Tienen tarifa propia (Código Fiscal Art. 732): 10% hasta B/.25,000 y
+    // B/.2,500 más 15% sobre el excedente. No se proyectan ni se mezclan con
+    // el salario: es una retención sobre lo efectivamente pagado en el año.
+    // ====================================================================
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(10_000, 1_000)]
+    [InlineData(25_000, 2_500)]      // el tope del primer tramo
+    [InlineData(30_000, 3_250)]      // 2,500 + 15% de 5,000
+    [InlineData(100_000, 13_750)]    // 2,500 + 15% de 75,000
+    public void TarifaDeGastosDeRepresentacion__SigueLosDosTramosDelArticulo732(
+        decimal acumuladoAnual, decimal esperado)
+    {
+        MotorIsrPanama.CalcularIsrGastosRepresentacion(acumuladoAnual).Should().Be(esperado);
+    }
+
+    [Fact]
+    public void GastoQueCruzaLos25000__SeParteSoloEntreElDiezYElQuincePorCiento()
+    {
+        // Ya lleva 20,000 pagados (2,000 retenidos) y ahora le pagan 10,000 más.
+        // Del pago nuevo, 5,000 completan el primer tramo al 10% y 5,000 van al 15%.
+        var resultado = MotorIsrPanama.Calcular(new CorridaIsr
+        {
+            Frecuencia = PayPeriodType.Mensual,
+            NumeroPeriodoEmpleado = 6,
+            AcumuladoAnterior = new AcumuladoIsr
+            {
+                GastoRepresentacionProcesado = 20_000m,
+                IsrGastoRepresentacionProcesado = 2_000m
+            },
+            Movimientos = new[]
+            {
+                new MovimientoIsr(TratamientoIsr.GastoRepresentacion, 10_000m)
+            }
+        });
+
+        resultado.GastoRepresentacionAcumulado.Should().Be(30_000m);
+        resultado.IsrGastoRepresentacionAcumulado.Should().Be(3_250m);
+        resultado.IsrGastoRepresentacionPeriodo.Should().Be(1_250m, "500 al 10% más 750 al 15%");
+    }
+
+    [Fact]
+    public void GastosDeRepresentacion__NoAlteranElIsrDelSalario()
+    {
+        var acumulado = new AcumuladoIsr { IngresoGravableProcesado = 11_000m };
+
+        var movimientosSalario = new[]
+        {
+            new MovimientoIsr(TratamientoIsr.GravableAcumulable, 1_000m)
+        };
+
+        var sinGasto = MotorIsrPanama.Calcular(new CorridaIsr
+        {
+            Frecuencia = PayPeriodType.Mensual,
+            NumeroPeriodoEmpleado = 12,
+            AcumuladoAnterior = acumulado,
+            Movimientos = movimientosSalario
+        });
+
+        var conGasto = MotorIsrPanama.Calcular(new CorridaIsr
+        {
+            Frecuencia = PayPeriodType.Mensual,
+            NumeroPeriodoEmpleado = 12,
+            AcumuladoAnterior = acumulado,
+            Movimientos = movimientosSalario
+                .Append(new MovimientoIsr(TratamientoIsr.GastoRepresentacion, 5_000m))
+                .ToArray()
+        });
+
+        conGasto.IngresoAnualProyectado.Should().Be(sinGasto.IngresoAnualProyectado,
+            "el gasto de representación no entra en la proyección del salario");
+        conGasto.IsrDescontarPeriodo.Should().Be(sinGasto.IsrDescontarPeriodo,
+            "tampoco altera la renta neta gravable del Art. 700");
+
+        conGasto.IsrGastoRepresentacionPeriodo.Should().Be(500m, "10% de 5,000");
+        conGasto.IsrTotalDescontarPeriodo.Should()
+            .Be(sinGasto.IsrDescontarPeriodo + 500m, "el comprobante suma las dos retenciones");
+    }
+
+    [Fact]
+    public void GastosDeRepresentacion__ElAnioSeRetieneCompletoMesAMes()
+    {
+        // 2,500 mensuales durante 12 meses: 30,000 en el año.
+        var grProcesado = 0m;
+        var isrGrProcesado = 0m;
+
+        for (var mes = 1; mes <= 12; mes++)
+        {
+            var resultado = MotorIsrPanama.Calcular(new CorridaIsr
+            {
+                Frecuencia = PayPeriodType.Mensual,
+                NumeroPeriodoEmpleado = mes,
+                AcumuladoAnterior = new AcumuladoIsr
+                {
+                    GastoRepresentacionProcesado = grProcesado,
+                    IsrGastoRepresentacionProcesado = isrGrProcesado
+                },
+                Movimientos = new[]
+                {
+                    new MovimientoIsr(TratamientoIsr.GastoRepresentacion, 2_500m)
+                }
+            });
+
+            grProcesado += 2_500m;
+            isrGrProcesado += resultado.IsrGastoRepresentacionPeriodo;
+        }
+
+        grProcesado.Should().Be(30_000m);
+        isrGrProcesado.Should().Be(MotorIsrPanama.CalcularIsrGastosRepresentacion(30_000m),
+            "mes a mes se llega exactamente al impuesto del año, sin sobrantes de redondeo");
+        isrGrProcesado.Should().Be(3_250m);
+    }
+
+    [Fact]
+    public void SaldosDeMigracion__TambienCuentanParaLosGastosDeRepresentacion()
+    {
+        // Migró a mitad de año con 25,000 ya pagados y 2,500 ya retenidos.
+        var resultado = MotorIsrPanama.Calcular(new CorridaIsr
+        {
+            Frecuencia = PayPeriodType.Mensual,
+            NumeroPeriodoEmpleado = 1,
+            AcumuladoAnterior = new AcumuladoIsr
+            {
+                GastoRepresentacionInicial = 25_000m,
+                IsrGastoRepresentacionInicial = 2_500m
+            },
+            Movimientos = new[]
+            {
+                new MovimientoIsr(TratamientoIsr.GastoRepresentacion, 1_000m)
+            }
+        });
+
+        resultado.IsrGastoRepresentacionPeriodo.Should().Be(150m,
+            "el primer tramo ya se agotó antes de migrar: el pago nuevo va todo al 15%");
+    }
 }
