@@ -41,6 +41,12 @@ public class FilaFichaIsrDto
     /// <summary>Lo que el motor calcula descontar en esta corrida.</summary>
     public decimal IsrCalculado { get; set; }
 
+    /// <summary>Gasto de representación pagado en la corrida, si lo hubo.</summary>
+    public decimal GastoRepresentacion { get; set; }
+
+    /// <summary>Retención sobre el gasto de representación, con su tarifa propia.</summary>
+    public decimal IsrGastoRepresentacion { get; set; }
+
     /// <summary>Lo que de verdad se le descontó y quedó guardado en la planilla.</summary>
     public decimal IsrRetenido { get; set; }
 
@@ -65,6 +71,8 @@ public class FichaIsrAnualDto
     public decimal IngresoGravableInicial { get; set; }
     public decimal DecimoInicial { get; set; }
     public decimal IsrRetenidoInicial { get; set; }
+    public decimal GastoRepresentacionInicial { get; set; }
+    public decimal IsrGastoRepresentacionInicial { get; set; }
 
     public List<FilaFichaIsrDto> Filas { get; set; } = new();
 
@@ -72,6 +80,11 @@ public class FichaIsrAnualDto
     public decimal TotalGravable { get; set; }
     public decimal TotalDecimo { get; set; }
     public decimal TotalIsrRetenido { get; set; }
+
+    public decimal TotalGastoRepresentacion { get; set; }
+
+    /// <summary>Parte del ISR retenido que viene de gastos de representación.</summary>
+    public decimal TotalIsrGastoRepresentacion { get; set; }
 
     /// <summary>
     /// Impuesto que le corresponde según lo que realmente ganó en el año.

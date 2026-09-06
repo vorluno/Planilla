@@ -77,7 +77,9 @@ public class AcumuladosFiscalesController : ControllerBase
             Anio = anio,
             IngresoGravableInicial = saldos?.IngresoGravableInicial ?? 0m,
             DecimoInicial = saldos?.DecimoInicial ?? 0m,
-            IsrRetenidoInicial = saldos?.IsrRetenidoInicial ?? 0m
+            IsrRetenidoInicial = saldos?.IsrRetenidoInicial ?? 0m,
+            GastoRepresentacionInicial = saldos?.GastoRepresentacionInicial ?? 0m,
+            IsrGastoRepresentacionInicial = saldos?.IsrGastoRepresentacionInicial ?? 0m
         });
     }
 
@@ -93,7 +95,8 @@ public class AcumuladosFiscalesController : ControllerBase
         if (anio < 2000 || anio > 2100)
             return BadRequest(new { message = "Año fuera de rango." });
 
-        if (dto.IngresoGravableInicial < 0 || dto.DecimoInicial < 0 || dto.IsrRetenidoInicial < 0)
+        if (dto.IngresoGravableInicial < 0 || dto.DecimoInicial < 0 || dto.IsrRetenidoInicial < 0
+            || dto.GastoRepresentacionInicial < 0 || dto.IsrGastoRepresentacionInicial < 0)
             return BadRequest(new { message = "Los saldos iniciales no pueden ser negativos." });
 
         var tenantId = _tenantContext.TenantId;
@@ -127,6 +130,8 @@ public class AcumuladosFiscalesController : ControllerBase
         saldos.IngresoGravableInicial = dto.IngresoGravableInicial;
         saldos.DecimoInicial = dto.DecimoInicial;
         saldos.IsrRetenidoInicial = dto.IsrRetenidoInicial;
+        saldos.GastoRepresentacionInicial = dto.GastoRepresentacionInicial;
+        saldos.IsrGastoRepresentacionInicial = dto.IsrGastoRepresentacionInicial;
 
         await _context.SaveChangesAsync();
 
@@ -136,7 +141,9 @@ public class AcumuladosFiscalesController : ControllerBase
             Anio = anio,
             IngresoGravableInicial = saldos.IngresoGravableInicial,
             DecimoInicial = saldos.DecimoInicial,
-            IsrRetenidoInicial = saldos.IsrRetenidoInicial
+            IsrRetenidoInicial = saldos.IsrRetenidoInicial,
+            GastoRepresentacionInicial = saldos.GastoRepresentacionInicial,
+            IsrGastoRepresentacionInicial = saldos.IsrGastoRepresentacionInicial
         });
     }
 }
@@ -155,4 +162,13 @@ public class SaldosInicialesDto
 
     /// <summary>ISR ya retenido antes de migrar. Se descuenta del impuesto debido.</summary>
     public decimal IsrRetenidoInicial { get; set; }
+
+    /// <summary>Gastos de representación ya pagados en el año antes de migrar.</summary>
+    public decimal GastoRepresentacionInicial { get; set; }
+
+    /// <summary>
+    /// Impuesto ya retenido sobre ellos. Sin este dato el primer tramo del 10% se
+    /// volvería a aplicar sobre dinero que ya lo agotó.
+    /// </summary>
+    public decimal IsrGastoRepresentacionInicial { get; set; }
 }

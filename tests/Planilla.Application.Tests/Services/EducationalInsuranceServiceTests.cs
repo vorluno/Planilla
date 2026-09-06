@@ -203,4 +203,31 @@ public class EducationalInsuranceServiceTests
         // Assert
         result.Should().Be(12.50m); // 1000 * 1.25% = 12.50
     }
+
+    // ====================================================================
+    // Gastos de representación
+    // ====================================================================
+
+    [Fact]
+    public async Task GastoDeRepresentacion__TambienPagaSeguroEducativo()
+    {
+        // Criterio confirmado por el contador de la empresa: el seguro educativo
+        // corre sobre el gasto de representación igual que sobre el salario.
+        //
+        // En la planilla esto sale solo, porque el gasto de representación entra
+        // dentro del bruto (para la Caja de Seguro Social es salario, Ley 51 de
+        // 2005 Art. 91 num. 6). Este test fija que así sea: si alguien lo sacara
+        // del bruto para separarlo del impuesto sobre la renta, el seguro
+        // educativo dejaría de cobrarse sobre él sin que nadie lo notara.
+        var service = new EducationalInsuranceServicePortable(new MockPayrollConfigProvider());
+
+        var soloSalario = await service.CalculateEmployeeInsuranceAsync(
+            DefaultCompanyId, 2_000m, true, _calculationDate);
+
+        var conGastoDeRepresentacion = await service.CalculateEmployeeInsuranceAsync(
+            DefaultCompanyId, 2_000m + 1_000m, true, _calculationDate);
+
+        soloSalario.Should().Be(25m, "1.25% de 2,000");
+        conGastoDeRepresentacion.Should().Be(37.50m, "1.25% de los 3,000 completos");
+    }
 }

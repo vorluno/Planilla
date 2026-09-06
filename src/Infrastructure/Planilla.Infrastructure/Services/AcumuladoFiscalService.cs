@@ -49,11 +49,35 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
         // Seguro Social: es la única deducción que resta, criterio confirmado
         // por el contador de la empresa.
         var regulares = await ConsultaRegulares(empleadoId, anio, excluirPayrollHeaderId)
-            .Select(d => new { d.GrossPay, d.CssEmployee, d.IncomeTax })
+            .Select(d => new
+            {
+                d.GrossPay,
+                d.CssEmployee,
+                d.IncomeTax,
+                d.GastoRepresentacion,
+                d.IsrGastoRepresentacion
+            })
             .ToListAsync(cancellationToken);
 
-        var ingresoGravable = regulares.Sum(d => d.GrossPay - d.CssEmployee);
-        var isrRegular = regulares.Sum(d => d.IncomeTax);
+        // El gasto de representación viaja dentro del bruto pero tributa aparte, así
+        // que sale de la base del salario junto con la parte del Seguro Social que le
+        // toca. Se reparte a prorrata, igual que al calcularlo.
+        var ingresoGravable = regulares.Sum(d =>
+        {
+            var gasto = Math.Min(d.GastoRepresentacion, d.GrossPay);
+            var salario = d.GrossPay - gasto;
+            var cssDelSalario = d.GrossPay > 0m
+                ? Math.Round(d.CssEmployee * salario / d.GrossPay, 2, MidpointRounding.AwayFromZero)
+                : 0m;
+            return salario - cssDelSalario;
+        });
+
+        // IncomeTax trae las dos retenciones sumadas; para el acumulado del salario
+        // se descuenta la que corresponde al gasto de representación.
+        var isrRegular = regulares.Sum(d => d.IncomeTax - d.IsrGastoRepresentacion);
+
+        var gastoRepresentacion = regulares.Sum(d => d.GastoRepresentacion);
+        var isrGastoRepresentacion = regulares.Sum(d => d.IsrGastoRepresentacion);
 
         // Partidas de décimo del año. Van aparte porque el motor las trata como
         // un ingreso propio dentro del reparto de períodos equivalentes.
@@ -72,7 +96,11 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
             IngresoGravableProcesado = ingresoGravable,
             DecimoProcesado = decimoGravable,
             IsrRegularProcesado = isrRegular,
-            IsrDecimoProcesado = isrDecimo
+            IsrDecimoProcesado = isrDecimo,
+            GastoRepresentacionInicial = saldos?.GastoRepresentacionInicial ?? 0m,
+            IsrGastoRepresentacionInicial = saldos?.IsrGastoRepresentacionInicial ?? 0m,
+            GastoRepresentacionProcesado = gastoRepresentacion,
+            IsrGastoRepresentacionProcesado = isrGastoRepresentacion
         };
     }
 
@@ -117,7 +145,9 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
             PeriodosEquivalentes = MotorIsrPanama.ObtenerPeriodosEquivalentesAnuales(frecuencia),
             IngresoGravableInicial = saldos?.IngresoGravableInicial ?? 0m,
             DecimoInicial = saldos?.DecimoInicial ?? 0m,
-            IsrRetenidoInicial = saldos?.IsrRetenidoInicial ?? 0m
+            IsrRetenidoInicial = saldos?.IsrRetenidoInicial ?? 0m,
+            GastoRepresentacionInicial = saldos?.GastoRepresentacionInicial ?? 0m,
+            IsrGastoRepresentacionInicial = saldos?.IsrGastoRepresentacionInicial ?? 0m
         };
 
         // Las dos fuentes de corridas del año, mezcladas en orden de pago: así la
@@ -130,7 +160,9 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
                 false,
                 d.GrossPay,
                 d.CssEmployee,
-                d.IncomeTax))
+                d.IncomeTax,
+                d.GastoRepresentacion,
+                d.IsrGastoRepresentacion))
             .ToListAsync(cancellationToken);
 
         var decimos = await ConsultaDecimos(empleadoId, anio, null)
@@ -140,7 +172,9 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
                 true,
                 d.MontoDecimo,
                 d.CssEmpleado,
-                d.ISR))
+                d.ISR,
+                0m,
+                0m))
             .ToListAsync(cancellationToken);
 
         var corridas = regulares.Concat(decimos)
@@ -161,11 +195,21 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
         var decimoProcesado = 0m;
         var isrRegularProcesado = 0m;
         var isrDecimoProcesado = 0m;
+        var gastoProcesado = 0m;
+        var isrGastoProcesado = 0m;
         var numeroPeriodo = 0;
 
         foreach (var corrida in corridas)
         {
-            var gravable = corrida.Bruto - corrida.Css;
+            // El gasto de representación va dentro del bruto pero tributa aparte,
+            // así que sale de la base del salario con su parte del Seguro Social.
+            var gasto = Math.Min(corrida.GastoRepresentacion, corrida.Bruto);
+            var salario = corrida.Bruto - gasto;
+            var cssDelSalario = corrida.Bruto > 0m
+                ? Math.Round(corrida.Css * salario / corrida.Bruto, 2, MidpointRounding.AwayFromZero)
+                : 0m;
+
+            var gravable = salario - cssDelSalario;
 
             // El décimo no suma una corrida de salario: entra al reparto por su
             // propio peso, no como un período más del calendario.
@@ -179,7 +223,11 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
                 IngresoGravableProcesado = gravableProcesado,
                 DecimoProcesado = decimoProcesado,
                 IsrRegularProcesado = isrRegularProcesado,
-                IsrDecimoProcesado = isrDecimoProcesado
+                IsrDecimoProcesado = isrDecimoProcesado,
+                GastoRepresentacionInicial = ficha.GastoRepresentacionInicial,
+                IsrGastoRepresentacionInicial = ficha.IsrGastoRepresentacionInicial,
+                GastoRepresentacionProcesado = gastoProcesado,
+                IsrGastoRepresentacionProcesado = isrGastoProcesado
             };
 
             var resultado = MotorIsrPanama.Calcular(new CorridaIsr
@@ -193,6 +241,10 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
                         corrida.EsDecimo ? TratamientoIsr.DecimoTercerMes : TratamientoIsr.GravableAcumulable,
                         gravable)
                 }
+                .Concat(gasto > 0m
+                    ? new[] { new MovimientoIsr(TratamientoIsr.GastoRepresentacion, gasto) }
+                    : Array.Empty<MovimientoIsr>())
+                .ToArray()
             });
 
             if (corrida.EsDecimo)
@@ -203,7 +255,10 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
             else
             {
                 gravableProcesado += gravable;
-                isrRegularProcesado += corrida.Isr;
+                // corrida.Isr trae las dos retenciones sumadas.
+                isrRegularProcesado += corrida.Isr - corrida.IsrGastoRepresentacion;
+                gastoProcesado += gasto;
+                isrGastoProcesado += corrida.IsrGastoRepresentacion;
             }
 
             ficha.Filas.Add(new FilaFichaIsrDto
@@ -214,6 +269,8 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
                 EsDecimo = corrida.EsDecimo,
                 Bruto = corrida.Bruto,
                 SeguroSocial = corrida.Css,
+                GastoRepresentacion = gasto,
+                IsrGastoRepresentacion = corrida.IsrGastoRepresentacion,
                 Gravable = gravable,
                 GravableAcumulado = resultado.IngresoGravableAcumulado,
                 DecimoAcumulado = resultado.DecimoAcumulado,
@@ -223,16 +280,23 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
                 IsrDebidoAcumulado = resultado.IsrDebidoAcumulado,
                 IsrCalculado = resultado.IsrDescontarPeriodo,
                 IsrRetenido = corrida.Isr,
-                IsrRetenidoAcumulado = ficha.IsrRetenidoInicial + isrRegularProcesado + isrDecimoProcesado
+                IsrRetenidoAcumulado = ficha.IsrRetenidoInicial + isrRegularProcesado
+                                     + isrDecimoProcesado + isrGastoProcesado
             });
         }
 
         ficha.TotalGravable = ficha.IngresoGravableInicial + gravableProcesado;
         ficha.TotalDecimo = ficha.DecimoInicial + decimoProcesado;
-        ficha.TotalIsrRetenido = ficha.IsrRetenidoInicial + isrRegularProcesado + isrDecimoProcesado;
+        ficha.TotalGastoRepresentacion = ficha.GastoRepresentacionInicial + gastoProcesado;
+        ficha.TotalIsrGastoRepresentacion = ficha.IsrGastoRepresentacionInicial + isrGastoProcesado;
+        ficha.TotalIsrRetenido = ficha.IsrRetenidoInicial + isrRegularProcesado
+                               + isrDecimoProcesado + ficha.TotalIsrGastoRepresentacion;
 
+        // Cada uno con su tarifa: el salario por el Art. 700 y el gasto de
+        // representación por la suya. Sumarlos en una sola base los gravaría mal.
         ficha.IsrDelAnioSegunIngresoReal =
-            MotorIsrPanama.CalcularIsrAnual(ficha.TotalGravable + ficha.TotalDecimo);
+            MotorIsrPanama.CalcularIsrAnual(ficha.TotalGravable + ficha.TotalDecimo)
+            + MotorIsrPanama.CalcularIsrGastosRepresentacion(ficha.TotalGastoRepresentacion);
         ficha.DiferenciaRetenido = ficha.TotalIsrRetenido - ficha.IsrDelAnioSegunIngresoReal;
 
         return ficha;
@@ -253,7 +317,8 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
 
     /// <summary>Una corrida del año, venga de planilla regular o de décimo.</summary>
     private sealed record FilaCorrida(
-        DateTime FechaPago, string Numero, bool EsDecimo, decimal Bruto, decimal Css, decimal Isr);
+        DateTime FechaPago, string Numero, bool EsDecimo, decimal Bruto, decimal Css, decimal Isr,
+        decimal GastoRepresentacion, decimal IsrGastoRepresentacion);
 
     /// <summary>
     /// Detalles de planilla regular del empleado en el año, sin las anuladas y

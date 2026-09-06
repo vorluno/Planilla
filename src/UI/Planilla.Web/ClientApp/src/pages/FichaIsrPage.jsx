@@ -27,6 +27,8 @@ const SALDOS_VACIOS = {
   ingresoGravableInicial: '',
   decimoInicial: '',
   isrRetenidoInicial: '',
+  gastoRepresentacionInicial: '',
+  isrGastoRepresentacionInicial: '',
 };
 
 export default function FichaIsrPage() {
@@ -83,6 +85,8 @@ export default function FichaIsrPage() {
         ingresoGravableInicial: String(data?.ingresoGravableInicial ?? 0),
         decimoInicial: String(data?.decimoInicial ?? 0),
         isrRetenidoInicial: String(data?.isrRetenidoInicial ?? 0),
+        gastoRepresentacionInicial: String(data?.gastoRepresentacionInicial ?? 0),
+        isrGastoRepresentacionInicial: String(data?.isrGastoRepresentacionInicial ?? 0),
       });
       setShowSaldos(true);
     } catch (error) {
@@ -95,6 +99,8 @@ export default function FichaIsrPage() {
       ingresoGravableInicial: parseFloat(saldos.ingresoGravableInicial) || 0,
       decimoInicial: parseFloat(saldos.decimoInicial) || 0,
       isrRetenidoInicial: parseFloat(saldos.isrRetenidoInicial) || 0,
+      gastoRepresentacionInicial: parseFloat(saldos.gastoRepresentacionInicial) || 0,
+      isrGastoRepresentacionInicial: parseFloat(saldos.isrGastoRepresentacionInicial) || 0,
     };
 
     if (Object.values(valores).some(v => v < 0)) {
@@ -209,6 +215,21 @@ export default function FichaIsrPage() {
             />
           </div>
 
+          {ficha.totalGastoRepresentacion > 0 && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Tarjeta
+                titulo="Gastos de representación del año"
+                valor={fmt(ficha.totalGastoRepresentacion)}
+              />
+              <Tarjeta
+                titulo="ISR sobre gastos de representación"
+                valor={fmt(ficha.totalIsrGastoRepresentacion)}
+                nota="Tarifa propia: 10% hasta B/. 25,000 y 15% sobre el excedente"
+                acento="text-purple-400"
+              />
+            </div>
+          )}
+
           <div className="text-sm text-gray-400 flex items-start gap-2">
             <Info className="w-4 h-4 mt-0.5 shrink-0" />
             <p>
@@ -220,7 +241,7 @@ export default function FichaIsrPage() {
 
           {/* Libro por corrida */}
           <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-x-auto">
-            <table className="w-full text-sm min-w-[1100px]">
+            <table className="w-full text-sm min-w-[1250px]">
               <thead>
                 <tr className="bg-slate-700/50 text-gray-400 text-left">
                   <th className="px-3 py-3 font-medium">#</th>
@@ -229,18 +250,20 @@ export default function FichaIsrPage() {
                   <th className="px-3 py-3 font-medium text-right">Bruto</th>
                   <th className="px-3 py-3 font-medium text-right">Seg. Social</th>
                   <th className="px-3 py-3 font-medium text-right">Gravable</th>
+                  <th className="px-3 py-3 font-medium text-right">G. repr.</th>
                   <th className="px-3 py-3 font-medium text-right">Acumulado</th>
                   <th className="px-3 py-3 font-medium text-right">Períodos</th>
                   <th className="px-3 py-3 font-medium text-right">Proyectado</th>
                   <th className="px-3 py-3 font-medium text-right">ISR anual</th>
                   <th className="px-3 py-3 font-medium text-right">Debido</th>
+                  <th className="px-3 py-3 font-medium text-right">ISR g. repr.</th>
                   <th className="px-3 py-3 font-medium text-right">Descontado</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-700">
                 {ficha.filas.length === 0 && (
                   <tr>
-                    <td colSpan={12} className="px-4 py-10 text-center text-gray-400">
+                    <td colSpan={14} className="px-4 py-10 text-center text-gray-400">
                       Este empleado no tiene corridas en {anio}
                     </td>
                   </tr>
@@ -265,6 +288,9 @@ export default function FichaIsrPage() {
                     <td className="px-3 py-2 text-right font-mono">{fmt(f.bruto)}</td>
                     <td className="px-3 py-2 text-right font-mono text-gray-400">{fmt(f.seguroSocial)}</td>
                     <td className="px-3 py-2 text-right font-mono">{fmt(f.gravable)}</td>
+                    <td className="px-3 py-2 text-right font-mono text-gray-400">
+                      {f.gastoRepresentacion > 0 ? fmt(f.gastoRepresentacion) : '—'}
+                    </td>
                     <td className="px-3 py-2 text-right font-mono text-gray-400">{fmt(f.gravableAcumulado)}</td>
                     <td className="px-3 py-2 text-right font-mono text-gray-400">
                       {Number(f.periodoEquivalente).toFixed(3)}
@@ -272,6 +298,9 @@ export default function FichaIsrPage() {
                     <td className="px-3 py-2 text-right font-mono text-gray-400">{fmt(f.ingresoAnualProyectado)}</td>
                     <td className="px-3 py-2 text-right font-mono text-gray-400">{fmt(f.isrAnualProyectado)}</td>
                     <td className="px-3 py-2 text-right font-mono text-gray-400">{fmt(f.isrDebidoAcumulado)}</td>
+                    <td className="px-3 py-2 text-right font-mono text-purple-400">
+                      {f.isrGastoRepresentacion > 0 ? fmt(f.isrGastoRepresentacion) : '—'}
+                    </td>
                     <td className="px-3 py-2 text-right font-mono text-blue-400">{fmt(f.isrRetenido)}</td>
                   </tr>
                 ))}
@@ -313,6 +342,21 @@ export default function FichaIsrPage() {
               ayuda="Se descuenta del impuesto debido para no cobrarlo dos veces"
               value={saldos.isrRetenidoInicial}
               onChange={v => setSaldos(s => ({ ...s, isrRetenidoInicial: v }))}
+            />
+
+            <CampoSaldo
+              id="saldo-gasto-representacion"
+              label="Gastos de representación pagados"
+              ayuda="Solo si el empleado recibe gastos de representación"
+              value={saldos.gastoRepresentacionInicial}
+              onChange={v => setSaldos(s => ({ ...s, gastoRepresentacionInicial: v }))}
+            />
+            <CampoSaldo
+              id="saldo-isr-gasto-representacion"
+              label="ISR retenido sobre esos gastos"
+              ayuda="Su tarifa es por tramos: sin este dato el 10% se cobraría dos veces"
+              value={saldos.isrGastoRepresentacionInicial}
+              onChange={v => setSaldos(s => ({ ...s, isrGastoRepresentacionInicial: v }))}
             />
 
             <div className="flex justify-end gap-3 pt-2">

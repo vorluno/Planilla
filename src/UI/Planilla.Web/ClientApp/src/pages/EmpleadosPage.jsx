@@ -43,6 +43,7 @@ const EmpleadosPage = () => {
         numeroIdentificacion: '',
         email: '',
         salarioBase: '',
+        gastoRepresentacionMensual: '',
         fechaContratacion: '',
         departamentoId: '',
         posicionId: '',
@@ -153,6 +154,7 @@ const EmpleadosPage = () => {
                 nombre: formData.nombre,
                 apellido: formData.apellido,
                 salarioBase: parseFloat(formData.salarioBase),
+                gastoRepresentacionMensual: parseFloat(formData.gastoRepresentacionMensual) || 0,
                 departamentoId: formData.departamentoId ? parseInt(formData.departamentoId) : null,
                 posicionId: formData.posicionId ? parseInt(formData.posicionId) : null,
                 payPeriodType: parseInt(formData.payPeriodType),
@@ -220,6 +222,7 @@ const EmpleadosPage = () => {
             numeroIdentificacion: empleado.numeroIdentificacion,
             email: empleado.usuarioVinculadoEmail ?? empleado.email ?? '',
             salarioBase: empleado.salarioBase.toString(),
+            gastoRepresentacionMensual: (empleado.gastoRepresentacionMensual ?? 0).toString(),
             fechaContratacion: empleado.fechaContratacion
                 ? toDateInputValue(empleado.fechaContratacion)
                 : '',
@@ -357,6 +360,7 @@ const EmpleadosPage = () => {
             numeroIdentificacion: '',
             email: '',
             salarioBase: '',
+            gastoRepresentacionMensual: '',
             fechaContratacion: '',
             departamentoId: '',
             posicionId: '',
@@ -860,6 +864,35 @@ const EmpleadosPage = () => {
                                     <p className="text-xs text-gray-500 mt-1">
                                         El salario mensual del empleado (independiente del período de pago)
                                     </p>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="gasto-representacion" className="block text-sm font-medium text-gray-300 mb-2">
+                                        Gasto de Representación (Mensual)
+                                    </label>
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm font-medium">B/.</span>
+                                        <input
+                                            id="gasto-representacion"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            value={formData.gastoRepresentacionMensual}
+                                            onChange={(e) => setFormData({ ...formData, gastoRepresentacionMensual: e.target.value })}
+                                            className="w-full pl-10 pr-3 py-2 border border-navy-600 bg-navy-800 text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Cotiza al Seguro Social como salario, pero la renta lo grava aparte
+                                        (10% hasta B/. 25,000 al año y 15% sobre el excedente). No puede superar el salario.
+                                    </p>
+                                    {formData.gastoRepresentacionMensual && formData.salarioBase &&
+                                     parseFloat(formData.gastoRepresentacionMensual) > parseFloat(formData.salarioBase) && (
+                                        <p className="text-xs text-amber-400 mt-1">
+                                            Por ley no puede ser mayor que el salario del empleado.
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Fecha de Contratación - visible tanto en creación como en edición */}

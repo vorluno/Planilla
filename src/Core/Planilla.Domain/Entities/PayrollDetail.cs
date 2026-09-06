@@ -125,6 +125,16 @@ public class PayrollDetail : ITenantEntity
     /// <summary>
     /// Otras deducciones (préstamos, embargos, seguros privados, etc.).
     /// </summary>
+    /// <summary>
+    /// Gasto de representación pagado en el período. Va dentro de GrossPay porque
+    /// para la Caja de Seguro Social es salario, pero se guarda aparte porque el
+    /// impuesto sobre la renta lo grava con tarifa propia.
+    /// </summary>
+    public decimal GastoRepresentacion { get; set; }
+
+    /// <summary>Retención de renta sobre el gasto de representación, ya incluida en IncomeTax.</summary>
+    public decimal IsrGastoRepresentacion { get; set; }
+
     public decimal OtherDeductions { get; set; }
 
     /// <summary>
