@@ -242,16 +242,14 @@ public class StaticPayrollConfigProviderTests
             calculationDate: calculationDate
         );
 
-        // Assert — validación de sanidad (con SE deducible, Art. 709 núm. 4)
-        // annual = 2,000 * 13 = 26,000; SE = 26,000 * 1.25% = 325 → base 25,675
+        // Assert — sin deducciones: la base del ISR es el ingreso gravable completo.
+        // annual = 2,000 * 13 = 26,000; no se deduce ni Seguro Educativo ni CSS.
         // Bracket 2: MinIncome = 11,000.01, Rate = 15%, FixedAmount = 0
-        // Excedente = 25,675 - 11,000.01 = 14,674.99
-        // AnnualTax = 14,674.99 * 0.15 ≈ 2,201.25 → PeriodTax = 2,201.25 / 12 ≈ 183.44
-        result.TaxableIncome.Should().Be(26000m);
-        result.DependentDeduction.Should().Be(0m);
-        result.SeDeduction.Should().Be(325m);
-        result.NetTaxableIncome.Should().Be(25675m);
-        result.TaxAmount.Should().BeApproximately(183.44m, 0.02m);
+        // Excedente = 26,000 - 11,000.01 = 14,999.99
+        // AnnualTax = 14,999.99 * 0.15 = 2,250.00 → PeriodTax = 2,250 / 12 = 187.50
+        result.SeDeduction.Should().Be(0m);
+        result.NetTaxableIncome.Should().Be(26000m);
+        result.TaxAmount.Should().BeApproximately(187.50m, 0.02m);
     }
 
     [Fact]

@@ -29,17 +29,83 @@ public class PayrollProcessingService
     private readonly PayrollCalculationOrchestratorPortable _orchestrator;
     private readonly IAsistenciaCalculationService _asistenciaService;
     private readonly IDeduccionPrioridadEngine _deduccionEngine;
+    private readonly IAcumuladoFiscalService _acumuladoFiscalService;
 
     public PayrollProcessingService(
         ApplicationDbContext context,
         PayrollCalculationOrchestratorPortable orchestrator,
         IAsistenciaCalculationService asistenciaService,
-        IDeduccionPrioridadEngine deduccionEngine)
+        IDeduccionPrioridadEngine deduccionEngine,
+        IAcumuladoFiscalService acumuladoFiscalService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _orchestrator = orchestrator ?? throw new ArgumentNullException(nameof(orchestrator));
         _asistenciaService = asistenciaService ?? throw new ArgumentNullException(nameof(asistenciaService));
         _deduccionEngine = deduccionEngine ?? throw new ArgumentNullException(nameof(deduccionEngine));
+        _acumuladoFiscalService = acumuladoFiscalService ?? throw new ArgumentNullException(nameof(acumuladoFiscalService));
+    }
+
+    // ====================================================================
+    // ISR por método acumulativo
+    // ====================================================================
+
+    /// <summary>
+    /// Recalcula el ISR de un resultado ya calculado usando el motor acumulativo,
+    /// que compara el impuesto que el empleado debería llevar retenido a la fecha
+    /// contra el que ya se le retuvo y cobra solo la diferencia.
+    ///
+    /// Se hace después del orquestador y no dentro porque la base gravable es el
+    /// bruto menos el Seguro Social, y el Seguro Social sale de ese mismo cálculo.
+    /// </summary>
+    private async Task<PayrollCalculationResult> AplicarIsrAcumulativoAsync(
+        PayrollCalculationResult resultado,
+        Empleado empleado,
+        PayPeriodType frecuencia,
+        DateTime fechaPago,
+        int payrollHeaderId,
+        CancellationToken cancellationToken = default)
+    {
+        if (!empleado.IsSubjectToIncomeTax)
+            return resultado;
+
+        var anio = fechaPago.Year;
+
+        var acumulado = await _acumuladoFiscalService.ObtenerAcumuladoAsync(
+            empleado.Id, anio, excluirPayrollHeaderId: payrollHeaderId,
+            cancellationToken: cancellationToken);
+
+        var numeroPeriodo = await _acumuladoFiscalService.ObtenerNumeroPeriodoAsync(
+            empleado.Id, anio, excluirPayrollHeaderId: payrollHeaderId,
+            cancellationToken: cancellationToken);
+
+        // Base gravable del período: bruto menos Seguro Social. Es el único
+        // descuento que resta, criterio confirmado por el contador de la empresa.
+        var gravablePeriodo = resultado.GrossPay - resultado.CssEmployee;
+
+        var isr = MotorIsrPanama.Calcular(new CorridaIsr
+        {
+            Frecuencia = frecuencia,
+            NumeroPeriodoEmpleado = numeroPeriodo,
+            AcumuladoAnterior = acumulado,
+            Movimientos = new[]
+            {
+                new MovimientoIsr(TratamientoIsr.GravableAcumulable, gravablePeriodo)
+            }
+        });
+
+        var incomeTax = isr.IsrDescontarPeriodo;
+
+        // El orquestador ya sumó su propio ISR en los totales; se rehacen con el nuevo.
+        var totalDeductions = resultado.CssEmployee
+                            + resultado.EducationalInsuranceEmployee
+                            + incomeTax;
+
+        return resultado with
+        {
+            IncomeTax = incomeTax,
+            TotalDeductions = totalDeductions,
+            NetPay = resultado.GrossPay - totalDeductions
+        };
     }
 
     /// <summary>
@@ -115,6 +181,21 @@ public class PayrollProcessingService
                 empleado.IsSubjectToIncomeTax,
                 payrollPeriodStart
             );
+
+            // El ISR del orquestador es una proyección del período suelto; el que
+            // manda es el acumulativo, que mira el año completo del empleado.
+            var cabecera = await _context.PayrollHeaders
+                .AsNoTracking()
+                .Where(h => h.Id == payrollHeaderId)
+                .Select(h => new { h.PayDate, h.PayPeriodType })
+                .FirstOrDefaultAsync();
+
+            payrollResult = await AplicarIsrAcumulativoAsync(
+                payrollResult,
+                empleado,
+                cabecera?.PayPeriodType ?? empleado.PayPeriodType,
+                cabecera?.PayDate ?? payrollPeriodEnd,
+                payrollHeaderId);
         }
 
         // ====================================================================
@@ -308,6 +389,13 @@ public class PayrollProcessingService
                 isSubjectToIncomeTax: employee.IsSubjectToIncomeTax,
                 calculationDate: DateTime.UtcNow
             );
+
+            calculationResult = await AplicarIsrAcumulativoAsync(
+                calculationResult,
+                employee,
+                payrollHeader.PayPeriodType,
+                payrollHeader.PayDate,
+                payrollHeader.Id);
         }
 
         // ====================================================================

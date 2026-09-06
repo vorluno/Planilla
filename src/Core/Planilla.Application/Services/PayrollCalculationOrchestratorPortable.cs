@@ -45,6 +45,12 @@ public class PayrollCalculationOrchestratorPortable
     /// <param name="isSubjectToEducationalInsurance">Indica si el empleado está sujeto a Seguro Educativo</param>
     /// <param name="isSubjectToIncomeTax">Indica si el empleado está sujeto a ISR</param>
     /// <param name="calculationDate">Fecha de cálculo (para determinar configuración vigente)</param>
+    /// <param name="incomeTaxOverride">
+    /// ISR ya calculado por el motor acumulativo. Cuando viene, se usa tal cual y no se
+    /// recalcula: el método acumulativo necesita el acumulado del año del empleado, que
+    /// vive en base de datos y este orquestador no conoce. Sin valor se cae al cálculo
+    /// por proyección simple del período, que es lo que usa el simulador.
+    /// </param>
     /// <returns>Resultado completo del cálculo de planilla</returns>
     public async Task<PayrollCalculationResult> CalculateEmployeePayrollAsync(
         int companyId,
@@ -57,7 +63,8 @@ public class PayrollCalculationOrchestratorPortable
         bool isSubjectToCss,
         bool isSubjectToEducationalInsurance,
         bool isSubjectToIncomeTax,
-        DateTime calculationDate)
+        DateTime calculationDate,
+        decimal? incomeTaxOverride = null)
     {
         // ====================================================================
         // 1. Calcular CSS completo (empleado + empleador + riesgo profesional)
@@ -95,17 +102,25 @@ public class PayrollCalculationOrchestratorPortable
         // 3. Calcular Impuesto Sobre la Renta (ISR)
         // Proyección anual con brackets progresivos
         // ====================================================================
-        var isrResult = await _incomeTaxService.CalculateIncomeTaxAsync(
-            companyId,
-            grossPay,
-            payFrequency,
-            dependents,
-            isSubjectToIncomeTax,
-            isSubjectToEducationalInsurance,
-            calculationDate
-        );
+        decimal incomeTax;
+        if (incomeTaxOverride.HasValue)
+        {
+            incomeTax = isSubjectToIncomeTax ? incomeTaxOverride.Value : 0m;
+        }
+        else
+        {
+            var isrResult = await _incomeTaxService.CalculateIncomeTaxAsync(
+                companyId,
+                grossPay,
+                payFrequency,
+                dependents,
+                isSubjectToIncomeTax,
+                isSubjectToEducationalInsurance,
+                calculationDate
+            );
 
-        decimal incomeTax = isrResult.TaxAmount;
+            incomeTax = isrResult.TaxAmount;
+        }
 
         // ====================================================================
         // 4. Calcular totales del empleado

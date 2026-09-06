@@ -125,11 +125,10 @@ public class DecimoCalculationService : IDecimoCalculationService
                     depDeduccion = validDeps * taxConfig.DependentDeductionAmount;
                 }
 
-                // Seguro Educativo deducible de la base del ISR (Art. 709 núm. 4 Código Fiscal),
-                // consistente con la planilla regular (IncomeTaxCalculationServicePortable).
-                decimal seDeduccion = seActivo && taxConfig != null
-                    ? annualBase * taxConfig.EducationalInsuranceEmployeeRate / 100m
-                    : 0m;
+                // El Seguro Educativo NO se deduce de la base del ISR: el Art. 24 de la Ley 8
+                // de 2010 eliminó esa deducción del numeral 4 del Art. 709. Consistente con la
+                // planilla regular (IncomeTaxCalculationServicePortable).
+                decimal seDeduccion = 0m;
                 decimal netGravable = Math.Max(0, annualBase - depDeduccion - seDeduccion);
                 decimal isrAnual = CalcularIsrAnual(netGravable, taxBrackets);
                 isr = RoundingPolicy.Round(isrAnual / 13m);

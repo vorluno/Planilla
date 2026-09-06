@@ -48,8 +48,8 @@ public class IncomeTaxCalculationServiceTests
         // Assert
         result.TaxableIncome.Should().Be(10920m);          // 840 * 13
         result.DependentDeduction.Should().Be(0);
-        result.SeDeduction.Should().Be(136.50m);           // 10,920 * 1.25%
-        result.NetTaxableIncome.Should().Be(10783.50m);    // 10,920 - 136.50
+        result.SeDeduction.Should().Be(0m);                // ya no se deduce (Ley 8/2010)
+        result.NetTaxableIncome.Should().Be(10920m);       // la base es el ingreso completo
         result.TaxAmount.Should().Be(0);                   // Tramo exento
         result.EffectiveTaxRate.Should().Be(0);
     }
@@ -73,11 +73,10 @@ public class IncomeTaxCalculationServiceTests
 
         // Assert
         result.TaxableIncome.Should().Be(39000m);          // 3000 * 13
-        result.SeDeduction.Should().Be(487.50m);           // 39,000 * 1.25%
-        result.NetTaxableIncome.Should().Be(38512.50m);    // 39,000 - 487.50
-        // ISR: (38,512.50 - 11,000) * 15% = 4,126.875 ≈ 4,126.88 anual
-        // Por mes: 4,126.88 / 12 = 343.91
-        result.TaxAmount.Should().Be(343.91m);
+        result.SeDeduction.Should().Be(0m);
+        result.NetTaxableIncome.Should().Be(39000m);       // sin deducciones: base = bruto
+        // ISR: (39,000 - 11,000) * 15% = 4,200 anual → / 12 = 350.00
+        result.TaxAmount.Should().Be(350.00m);
     }
 
     [Fact]
@@ -99,11 +98,11 @@ public class IncomeTaxCalculationServiceTests
 
         // Assert
         result.TaxableIncome.Should().Be(78000m);
-        result.SeDeduction.Should().Be(975.00m);           // 78,000 * 1.25%
-        result.NetTaxableIncome.Should().Be(77025m);       // 78,000 - 975
-        // ISR: 5,850 (fixed tramo 3) + (77,025 - 50,000) * 25% = 5,850 + 6,756.25 = 12,606.25 anual
-        // Por mes: 12,606.25 / 12 = 1,050.52
-        result.TaxAmount.Should().Be(1050.52m);
+        result.SeDeduction.Should().Be(0m);
+        result.NetTaxableIncome.Should().Be(78000m);
+        // ISR: 5,850 + (78,000 - 50,000) * 25% = 5,850 + 7,000 = 12,850 anual
+        // Por mes: 12,850 / 12 = 1,070.83
+        result.TaxAmount.Should().Be(1070.83m);
     }
 
     [Fact]
@@ -124,17 +123,18 @@ public class IncomeTaxCalculationServiceTests
             DefaultCompanyId, grossPay, payFrequency, dependents, isSubject, subjectToSe, _calculationDate);
 
         // Assert
+        // Los B/. 800 son por pareja en declaracion conjunta y se ajustan en la
+        // declaracion anual: en planilla no se aplican, se declaren los dependientes
+        // que se declaren. El resultado es el mismo que sin dependientes.
         result.TaxableIncome.Should().Be(39000m);
-        result.DependentDeduction.Should().Be(1600m);      // 800 * 2
-        result.SeDeduction.Should().Be(487.50m);           // 39,000 * 1.25%
-        result.NetTaxableIncome.Should().Be(36912.50m);    // 39,000 - 1,600 - 487.50
-        // ISR: (36,912.50 - 11,000) * 15% = 3,886.875 ≈ 3,886.88 anual
-        // Por mes: 3,886.88 / 12 = 323.91
-        result.TaxAmount.Should().Be(323.91m);
+        result.DependentDeduction.Should().Be(0m);
+        result.SeDeduction.Should().Be(0m);
+        result.NetTaxableIncome.Should().Be(39000m);
+        result.TaxAmount.Should().Be(350.00m);
     }
 
     [Fact]
-    public async Task CalculateIncomeTax__MasDe3Dependientes__LimitaA3()
+    public async Task CalculateIncomeTax__CualquierNumeroDeDependientes__NoAfectaLaRetencion()
     {
         // Arrange
         var mockProvider = new MockPayrollConfigProvider();
@@ -151,7 +151,7 @@ public class IncomeTaxCalculationServiceTests
             DefaultCompanyId, grossPay, payFrequency, dependents, isSubject, subjectToSe, _calculationDate);
 
         // Assert
-        result.DependentDeduction.Should().Be(2400m); // 800 * 3 (máximo del mock)
+        result.DependentDeduction.Should().Be(0m); // no se aplica en planilla, sea cual sea el numero
     }
 
     [Fact]
@@ -355,8 +355,8 @@ public class IncomeTaxCalculationServiceTests
         // Assert
         result.TaxableIncome.Should().Be(49999.95m); // 3846.15 * 13
         // SE = 49,999.95 * 1.25% = 624.999375 → base 49,374.95
-        // ISR: (49,374.95 - 11,000) * 15% = 5,756.24 anual → / 12 = 479.69
-        result.TaxAmount.Should().BeApproximately(479.69m, 0.05m);
+        // ISR: (49,999.95 - 11,000) * 15% = 5,849.99 anual → / 12 = 487.50
+        result.TaxAmount.Should().BeApproximately(487.50m, 0.05m);
     }
 
     [Fact]
@@ -400,11 +400,11 @@ public class IncomeTaxCalculationServiceTests
 
         // Assert
         result.TaxableIncome.Should().Be(130000m);
-        result.SeDeduction.Should().Be(1625.00m);          // 130,000 * 1.25%
-        result.NetTaxableIncome.Should().Be(128375m);      // 130,000 - 1,625
-        // ISR: 5,850 + (128,375 - 50,000) * 25% = 5,850 + 19,593.75 = 25,443.75 anual
-        // Por mes: 25,443.75 / 12 = 2,120.31
-        result.TaxAmount.Should().Be(2120.31m);
+        result.SeDeduction.Should().Be(0m);
+        result.NetTaxableIncome.Should().Be(130000m);      // sin deducciones: base = bruto
+        // ISR: 5,850 + (130,000 - 50,000) * 25% = 5,850 + 20,000 = 25,850 anual
+        // Por mes: 25,850 / 12 = 2,154.17
+        result.TaxAmount.Should().Be(2154.17m);
     }
 
     [Fact]
@@ -427,6 +427,6 @@ public class IncomeTaxCalculationServiceTests
         // Assert
         // Impuesto anual: 12,606.25 (con SE deducido)
         // Tasa efectiva: (12,606.25 / 78,000) * 100 ≈ 16.16%
-        result.EffectiveTaxRate.Should().BeApproximately(16.16m, 0.05m);
+        result.EffectiveTaxRate.Should().BeApproximately(16.47m, 0.05m);  // 12,850 / 78,000
     }
 }
