@@ -20,6 +20,22 @@ public class StaticPayrollConfigProviderTests
     private readonly StaticPayrollConfigProvider _provider = new();
 
     // ====================================================================
+    // Unidad del salario mínimo
+    // ====================================================================
+
+    [Fact]
+    public async Task GetTaxConfigAsync__SalarioMinimoLegal__VieneEnMensualNoPorHora()
+    {
+        var config = await _provider.GetTaxConfigAsync(companyId: 1, new DateTime(2026, 6, 1, 0, 0, 0, DateTimeKind.Utc));
+
+        // Quien lo consume lo prorratea como mensual para calcular el mínimo
+        // inembargable. Un valor por hora (1.30) dejaría la protección del salario
+        // en centavos y permitiría descontarle a un empleado casi todo su pago.
+        config!.SalarioMinimoLegal.Should().BeGreaterThan(100m,
+            "el campo es mensual: un número de una o dos cifras sería una tarifa por hora");
+    }
+
+    // ====================================================================
     // Fase 1: hasta feb 2027 (13.25% patronal)
     // ====================================================================
 
