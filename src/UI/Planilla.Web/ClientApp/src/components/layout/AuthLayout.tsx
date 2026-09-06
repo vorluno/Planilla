@@ -218,6 +218,17 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       {/* ══════════════════════════════════════════
           TOP NAVBAR — tabs primarios + utility zone
       ══════════════════════════════════════════ */}
+      {/* Saltar al contenido: sin esto, quien navega por teclado tiene que
+          recorrer los veintitantos enlaces del menú en cada cambio de página. */}
+      <a
+        href="#contenido-principal"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100]
+                   focus:px-4 focus:py-2 focus:rounded-lg focus:bg-primary-600 focus:text-white
+                   focus:text-sm focus:font-medium"
+      >
+        Saltar al contenido
+      </a>
+
       <header className="h-12 sticky top-0 z-50 bg-navy-950/90 backdrop-blur-xl border-b border-white/[0.06] flex items-center flex-shrink-0">
 
         {/* Logo compacto */}
@@ -233,7 +244,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <div className="flex-1" />
 
         {/* Tabs de navegación primaria */}
-        <nav className="flex items-center gap-0.5 px-2 overflow-x-auto flex-shrink-0">
+        <nav aria-label="Secciones principales" className="flex items-center gap-0.5 px-2 overflow-x-auto flex-shrink-0">
           {canAccessModuleCheck('dashboard') && (
             <NavLink to="/dashboard" className={topNavTabClass}>
               <LayoutDashboard className="w-4 h-4 flex-shrink-0" />
@@ -399,7 +410,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <aside className="w-[220px] bg-gradient-to-b from-navy-950 via-navy-950 to-[#0a1929] border-r border-white/[0.06] flex flex-col flex-shrink-0">
 
           {/* Navegación principal */}
-          <nav className="flex-1 px-2.5 py-2 space-y-0.5 overflow-y-auto">
+          <nav aria-label="Módulos de planilla" className="flex-1 px-2.5 py-2 space-y-0.5 overflow-y-auto">
 
             {/* Mi Perfil / Perfiles de Empleados */}
             <NavLink to="/mi-perfil" className={primaryItemClass}>
@@ -657,7 +668,13 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           )}
 
           {/* Page Content */}
-          <main className="flex-1 overflow-y-auto bg-navy-950 p-6">{children}</main>
+          <main
+            id="contenido-principal"
+            tabIndex={-1}
+            className="flex-1 overflow-y-auto bg-navy-950 p-6 focus:outline-none"
+          >
+            {children}
+          </main>
         </div>
       </div>
     </div>
