@@ -60,23 +60,25 @@ public class PayrollTaxConfiguration : ITenantEntity
     [Range(0, 100)]
     public decimal CssEmployerBaseRate { get; set; }
 
-    /// <summary>
-    /// Tasa de riesgo profesional bajo (0.56%)
-    /// </summary>
+    // Primas de riesgo profesional. La Caja de Seguro Social clasifica a cada
+    // empleador en una clase según su actividad económica y le asigna la prima
+    // correspondiente (Acuerdo N°2 de 1995): I 0.56, II 0.98, III 2.10, IV 3.64
+    // y V 5.67. No es una tasa que la empresa elija.
+    //
+    // Estos tres campos guardan las clases I, III y V como referencia; el valor
+    // que se cobra sale de CssRiskPercentage del empleado.
+
+    /// <summary>Prima de riesgo profesional, Clase I — 0.56% (oficinas, administración, comercio).</summary>
     [Required]
     [Range(0, 100)]
     public decimal CssRiskRateLow { get; set; }
 
-    /// <summary>
-    /// Tasa de riesgo profesional medio (2.50%)
-    /// </summary>
+    /// <summary>Prima de riesgo profesional, Clase III — 2.10% (transporte, manufactura).</summary>
     [Required]
     [Range(0, 100)]
     public decimal CssRiskRateMedium { get; set; }
 
-    /// <summary>
-    /// Tasa de riesgo profesional alto (5.39%)
-    /// </summary>
+    /// <summary>Prima de riesgo profesional, Clase V — 5.67% (construcción, maquinaria, minería).</summary>
     [Required]
     [Range(0, 100)]
     public decimal CssRiskRateHigh { get; set; }
