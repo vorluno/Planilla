@@ -14,6 +14,7 @@
 // ====================================================================
 
 using Microsoft.EntityFrameworkCore;
+using Vorluno.Planilla.Application.DTOs;
 using Vorluno.Planilla.Application.Interfaces;
 using Vorluno.Planilla.Application.Services;
 using Vorluno.Planilla.Domain.Enums;
@@ -87,6 +88,172 @@ public class AcumuladoFiscalService : IAcumuladoFiscalService
         // La corrida que se está calculando todavía no está guardada, por eso el +1.
         return corridasPrevias + 1;
     }
+
+
+    public async Task<FichaIsrAnualDto?> ObtenerFichaAnualAsync(
+        int empleadoId,
+        int anio,
+        CancellationToken cancellationToken = default)
+    {
+        var empleado = await _context.Empleados
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == empleadoId, cancellationToken);
+
+        if (empleado is null) return null;
+
+        var saldos = await _context.AcumuladosFiscalesEmpleados
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.EmpleadoId == empleadoId && a.Anio == anio, cancellationToken);
+
+        var frecuencia = empleado.PayPeriodType;
+
+        var ficha = new FichaIsrAnualDto
+        {
+            EmpleadoId = empleadoId,
+            NombreEmpleado = $"{empleado.Nombre} {empleado.Apellido}".Trim(),
+            Cedula = empleado.NumeroIdentificacion,
+            Anio = anio,
+            Frecuencia = frecuencia.ToString(),
+            PeriodosEquivalentes = MotorIsrPanama.ObtenerPeriodosEquivalentesAnuales(frecuencia),
+            IngresoGravableInicial = saldos?.IngresoGravableInicial ?? 0m,
+            DecimoInicial = saldos?.DecimoInicial ?? 0m,
+            IsrRetenidoInicial = saldos?.IsrRetenidoInicial ?? 0m
+        };
+
+        // Las dos fuentes de corridas del año, mezcladas en orden de pago: así la
+        // ficha muestra el décimo entre las quincenas, que es donde el contador
+        // ve saltar el contador de períodos.
+        var regulares = await ConsultaRegulares(empleadoId, anio, null)
+            .Select(d => new FilaCorrida(
+                d.PayrollHeader!.PayDate,
+                d.PayrollHeader.PayrollNumber,
+                false,
+                d.GrossPay,
+                d.CssEmployee,
+                d.IncomeTax))
+            .ToListAsync(cancellationToken);
+
+        var decimos = await ConsultaDecimos(empleadoId, anio, null)
+            .Select(d => new FilaCorrida(
+                d.PlanillaDecimo!.FechaPago,
+                d.PlanillaDecimo.Numero,
+                true,
+                d.MontoDecimo,
+                d.CssEmpleado,
+                d.ISR))
+            .ToListAsync(cancellationToken);
+
+        var corridas = regulares.Concat(decimos)
+            .OrderBy(c => c.FechaPago)
+            .ThenBy(c => c.EsDecimo)
+            .ToList();
+
+        // Se va reconstruyendo el acumulado corrida por corrida, igual que lo
+        // haría el motor si se recalculara el año entero de una sentada.
+        var acumulado = new AcumuladoIsr
+        {
+            IngresoGravableInicial = ficha.IngresoGravableInicial,
+            DecimoInicial = ficha.DecimoInicial,
+            IsrRetenidoInicial = ficha.IsrRetenidoInicial
+        };
+
+        var gravableProcesado = 0m;
+        var decimoProcesado = 0m;
+        var isrRegularProcesado = 0m;
+        var isrDecimoProcesado = 0m;
+        var numeroPeriodo = 0;
+
+        foreach (var corrida in corridas)
+        {
+            var gravable = corrida.Bruto - corrida.Css;
+
+            // El décimo no suma una corrida de salario: entra al reparto por su
+            // propio peso, no como un período más del calendario.
+            if (!corrida.EsDecimo) numeroPeriodo++;
+
+            var anterior = new AcumuladoIsr
+            {
+                IngresoGravableInicial = ficha.IngresoGravableInicial,
+                DecimoInicial = ficha.DecimoInicial,
+                IsrRetenidoInicial = ficha.IsrRetenidoInicial,
+                IngresoGravableProcesado = gravableProcesado,
+                DecimoProcesado = decimoProcesado,
+                IsrRegularProcesado = isrRegularProcesado,
+                IsrDecimoProcesado = isrDecimoProcesado
+            };
+
+            var resultado = MotorIsrPanama.Calcular(new CorridaIsr
+            {
+                Frecuencia = frecuencia,
+                NumeroPeriodoEmpleado = Math.Max(1, numeroPeriodo),
+                AcumuladoAnterior = anterior,
+                Movimientos = new[]
+                {
+                    new MovimientoIsr(
+                        corrida.EsDecimo ? TratamientoIsr.DecimoTercerMes : TratamientoIsr.GravableAcumulable,
+                        gravable)
+                }
+            });
+
+            if (corrida.EsDecimo)
+            {
+                decimoProcesado += gravable;
+                isrDecimoProcesado += corrida.Isr;
+            }
+            else
+            {
+                gravableProcesado += gravable;
+                isrRegularProcesado += corrida.Isr;
+            }
+
+            ficha.Filas.Add(new FilaFichaIsrDto
+            {
+                Periodo = Math.Max(1, numeroPeriodo),
+                FechaPago = corrida.FechaPago,
+                Concepto = corrida.EsDecimo ? $"Décimo {corrida.Numero}" : corrida.Numero,
+                EsDecimo = corrida.EsDecimo,
+                Bruto = corrida.Bruto,
+                SeguroSocial = corrida.Css,
+                Gravable = gravable,
+                GravableAcumulado = resultado.IngresoGravableAcumulado,
+                DecimoAcumulado = resultado.DecimoAcumulado,
+                PeriodoEquivalente = CalcularPeriodoEquivalente(resultado, Math.Max(1, numeroPeriodo)),
+                IngresoAnualProyectado = resultado.IngresoAnualProyectado,
+                IsrAnualProyectado = resultado.IsrAnualProyectado,
+                IsrDebidoAcumulado = resultado.IsrDebidoAcumulado,
+                IsrCalculado = resultado.IsrDescontarPeriodo,
+                IsrRetenido = corrida.Isr,
+                IsrRetenidoAcumulado = ficha.IsrRetenidoInicial + isrRegularProcesado + isrDecimoProcesado
+            });
+        }
+
+        ficha.TotalGravable = ficha.IngresoGravableInicial + gravableProcesado;
+        ficha.TotalDecimo = ficha.DecimoInicial + decimoProcesado;
+        ficha.TotalIsrRetenido = ficha.IsrRetenidoInicial + isrRegularProcesado + isrDecimoProcesado;
+
+        ficha.IsrDelAnioSegunIngresoReal =
+            MotorIsrPanama.CalcularIsrAnual(ficha.TotalGravable + ficha.TotalDecimo);
+        ficha.DiferenciaRetenido = ficha.TotalIsrRetenido - ficha.IsrDelAnioSegunIngresoReal;
+
+        return ficha;
+    }
+
+    /// <summary>
+    /// Reconstruye el contador de períodos equivalentes que usó el motor, que es
+    /// la columna PERIODOS del libro del contador (7.667, 16.333, 25.000, 26.000).
+    /// </summary>
+    private static decimal CalcularPeriodoEquivalente(ResultadoIsr resultado, int numeroPeriodo)
+    {
+        if (resultado.IngresoGravableAcumulado <= 0m) return numeroPeriodo;
+
+        var promedio = resultado.IngresoGravableAcumulado / numeroPeriodo;
+        return Math.Round(numeroPeriodo + resultado.DecimoAcumulado / promedio, 3,
+            MidpointRounding.AwayFromZero);
+    }
+
+    /// <summary>Una corrida del año, venga de planilla regular o de décimo.</summary>
+    private sealed record FilaCorrida(
+        DateTime FechaPago, string Numero, bool EsDecimo, decimal Bruto, decimal Css, decimal Isr);
 
     /// <summary>
     /// Detalles de planilla regular del empleado en el año, sin las anuladas y

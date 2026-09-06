@@ -4,6 +4,7 @@
 // motor de ISR pueda calcular por el método acumulativo.
 // ====================================================================
 
+using Vorluno.Planilla.Application.DTOs;
 using Vorluno.Planilla.Application.Services;
 
 namespace Vorluno.Planilla.Application.Interfaces;
@@ -47,5 +48,16 @@ public interface IAcumuladoFiscalService
         int empleadoId,
         int anio,
         int? excluirPayrollHeaderId = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Ficha anual de ISR del empleado: una fila por corrida con la proyección
+    /// del año y el impuesto retenido, que es el libro que el contador lleva a
+    /// mano. Las columnas de proyección se recalculan corrida por corrida; el
+    /// ISR retenido es el que quedó guardado en la planilla.
+    /// </summary>
+    Task<FichaIsrAnualDto?> ObtenerFichaAnualAsync(
+        int empleadoId,
+        int anio,
         CancellationToken cancellationToken = default);
 }

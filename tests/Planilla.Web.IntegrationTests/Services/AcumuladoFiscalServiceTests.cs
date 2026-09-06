@@ -225,6 +225,86 @@ public class AcumuladoFiscalServiceTests
             .Should().Be(2, "el décimo no suma una corrida de salario al contador");
     }
 
+
+    [Fact]
+    public async Task FichaAnual__ReproduceElLibroDelContadorQuincenaAQuincena()
+    {
+        using var db = NuevoContexto();
+
+        db.Empleados.Add(new Empleado
+        {
+            Id = EmpleadoId,
+            TenantId = TenantId,
+            Nombre = "Ana",
+            Apellido = "Perez",
+            NumeroIdentificacion = "8-888-8888",
+            PayPeriodType = PayPeriodType.Quincenal
+        });
+
+        // Año quincenal completo de B/.500, con las tres partidas de décimo.
+        // El Seguro Social se deja en cero para que los números de la ficha se
+        // puedan seguir a mano contra el libro.
+        for (var q = 1; q <= 24; q++)
+        {
+            SembrarPlanilla(db, q, FechaQuincena(q), bruto: 500m, css: 0m, isr: 0m);
+        }
+
+        var partidas = new[] { (id: 1, quincena: 7), (id: 2, quincena: 15), (id: 3, quincena: 23) };
+        foreach (var (id, quincena) in partidas)
+        {
+            db.PlanillasDecimo.Add(new PlanillaDecimo
+            {
+                Id = id,
+                TenantId = TenantId,
+                Numero = $"D-{id}",
+                PeriodoDesde = new DateTime(Anio, 1, 1),
+                PeriodoHasta = FechaQuincena(quincena),
+                FechaPago = FechaQuincena(quincena),
+                Estado = EstadoDecimo.Pagada
+            });
+            db.DetallesDecimo.Add(new DetalleDecimo
+            {
+                Id = id,
+                TenantId = TenantId,
+                PlanillaDecimoId = id,
+                EmpleadoId = EmpleadoId,
+                MontoDecimo = 333.33m,
+                CssEmpleado = 0m,
+                ISR = 0m
+            });
+        }
+        await db.SaveChangesAsync();
+
+        var ficha = await new AcumuladoFiscalService(db).ObtenerFichaAnualAsync(EmpleadoId, Anio);
+
+        ficha.Should().NotBeNull();
+        ficha!.PeriodosEquivalentes.Should().Be(26m, "una quincenal reparte el año en 26, no en 24");
+        ficha.Filas.Should().HaveCount(27, "24 quincenas más las tres partidas de décimo");
+
+        // La columna PERIODOS del libro: el contador salta al pagarse cada partida.
+        var enDecimos = ficha.Filas.Where(f => f.EsDecimo).Select(f => f.PeriodoEquivalente).ToList();
+        enDecimos[0].Should().BeApproximately(7.667m, 0.001m);
+        enDecimos[1].Should().BeApproximately(16.333m, 0.001m);
+        enDecimos[2].Should().BeApproximately(25.000m, 0.001m);
+
+        ficha.Filas.Last().PeriodoEquivalente.Should().BeApproximately(26.000m, 0.001m,
+            "al cerrar el año el contador llega justo a los períodos equivalentes");
+
+        // Ingreso real: 12,000 de salario más 1,000 de décimo.
+        ficha.TotalGravable.Should().Be(12_000m);
+        ficha.TotalDecimo.Should().Be(999.99m);
+        ficha.IsrDelAnioSegunIngresoReal.Should().Be(300m, "(12,999.99 - 11,000) x 15%");
+    }
+
+    /// <summary>Fecha de pago de la quincena n: 15 y último de cada mes.</summary>
+    private static DateTime FechaQuincena(int n)
+    {
+        var mes = (n + 1) / 2;
+        return n % 2 == 1
+            ? new DateTime(Anio, mes, 15)
+            : new DateTime(Anio, mes, DateTime.DaysInMonth(Anio, mes));
+    }
+
     private class BypassTenantContext : ITenantContext
     {
         public int TenantId => 0;

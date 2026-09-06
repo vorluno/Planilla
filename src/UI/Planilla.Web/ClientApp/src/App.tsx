@@ -42,6 +42,7 @@ import AusenciasPage from './pages/AusenciasPage.jsx';
 import VacacionesPage from './pages/VacacionesPage.jsx';
 import PlanillasPage from './pages/PlanillasPage.jsx';
 import DecimoPage from './pages/DecimoPage.jsx';
+import FichaIsrPage from './pages/FichaIsrPage.jsx';
 import ConfiguracionPage from './pages/ConfiguracionPage.jsx';
 import SalarioMinimoPage from './pages/SalarioMinimoPage.jsx';
 import ReportesPage from './pages/ReportesPage.jsx';
@@ -429,6 +430,17 @@ function App() {
             <ProtectedRoute>
               <AuthLayout>
                 <DecimoPage />
+              </AuthLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/ficha-isr"
+          element={
+            <ProtectedRoute>
+              <AuthLayout>
+                <FichaIsrPage />
               </AuthLayout>
             </ProtectedRoute>
           }
