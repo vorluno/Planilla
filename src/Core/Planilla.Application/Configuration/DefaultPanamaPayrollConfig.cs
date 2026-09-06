@@ -72,8 +72,18 @@ public static class DefaultPanamaPayrollConfig
     private const decimal DependentDeductionAmount = 800.00m;
     private const int MaxDependents = 99; // Ley 37/2018 + Decreto 368/2018 — sin límite legal
 
-    // DEV-28: Salario mínimo legal (referencial, varía por sector)
-    private const decimal SalarioMinimoLegal = 1.30m; // B/. por hora (referencia comercio — sector más común)
+    // Salario mínimo legal, en B/. MENSUALES.
+    //
+    // La unidad importa: este valor viaja en PayrollTaxConfigDto.SalarioMinimoLegal,
+    // y quien lo consume (DeduccionPrioridadEngine.ProrratearSalarioMinimo) lo trata
+    // como mensual para calcular el mínimo inembargable del período. Estaba puesto
+    // como tarifa POR HORA (1.30), que en un campo mensual deja la protección del
+    // salario en centavos: con ese número se le podría descontar a un empleado casi
+    // todo su pago. Se alinea con el valor por omisión de PayrollTaxConfiguration.
+    //
+    // Es un valor de arranque: el mínimo real varía por región y actividad, y cada
+    // empresa ajusta el suyo desde Configuración.
+    private const decimal SalarioMinimoLegal = 700.00m;
 
     // ====================================================================
     // API pública

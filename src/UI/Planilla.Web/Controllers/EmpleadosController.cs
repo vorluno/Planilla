@@ -148,7 +148,8 @@ namespace Vorluno.Planilla.Web.Controllers
                     e.Empleado.Dependents,
                     e.Empleado.CssRiskPercentage,
                     (int)e.Empleado.PayPeriodType,
-                    e.Empleado.TipoContrato
+                    e.Empleado.TipoContrato,
+                    e.Empleado.GastoRepresentacionMensual
                 );
             }).ToList();
 
@@ -236,7 +237,8 @@ namespace Vorluno.Planilla.Web.Controllers
                 result.Empleado.Dependents,
                 result.Empleado.CssRiskPercentage,
                 (int)result.Empleado.PayPeriodType,
-                result.Empleado.TipoContrato
+                result.Empleado.TipoContrato,
+                result.Empleado.GastoRepresentacionMensual
             );
 
             return Ok(empleadoDto);
@@ -258,6 +260,16 @@ namespace Vorluno.Planilla.Web.Controllers
             // Validar número de identificación único dentro del tenant
             // DEV-34: Filtrar explícitamente por TenantId para evitar fuga cross-tenant.
             // Sin este filtro, revelaría si la cédula existe en otro tenant.
+            // El gasto de representación no puede exceder el salario del trabajador:
+            // por encima de eso deja de ser deducible para la empresa.
+            if (empleadoDto.GastoRepresentacionMensual > empleadoDto.SalarioBase)
+            {
+                return BadRequest(new
+                {
+                    message = "El gasto de representación no puede ser mayor que el salario del empleado."
+                });
+            }
+
             var numeroIdentificacion = (empleadoDto.NumeroIdentificacion ?? "").Trim();
             var yaExiste = await _context.Empleados
                 .AnyAsync(e => e.TenantId == tenantId && e.NumeroIdentificacion == numeroIdentificacion && !e.IsDeleted);
@@ -369,7 +381,8 @@ namespace Vorluno.Planilla.Web.Controllers
                 empleado.Dependents,
                 empleado.CssRiskPercentage,
                 (int)empleado.PayPeriodType,
-                empleado.TipoContrato
+                empleado.TipoContrato,
+                empleado.GastoRepresentacionMensual
             );
 
             // ✅ AUDIT LOG: Registrar creación de empleado
@@ -417,6 +430,16 @@ namespace Vorluno.Planilla.Web.Controllers
                 _logger.LogWarning("Usuario vinculado a empleado {LinkedId} intentó actualizar empleado {RequestedId}",
                     linkedEmployeeId.Value, id);
                 return Forbid(); // 403 Forbidden - no puede editar otros empleados
+            }
+
+            // El gasto de representación no puede exceder el salario del trabajador:
+            // por encima de eso deja de ser deducible para la empresa.
+            if (empleadoDto.GastoRepresentacionMensual > empleadoDto.SalarioBase)
+            {
+                return BadRequest(new
+                {
+                    message = "El gasto de representación no puede ser mayor que el salario del empleado."
+                });
             }
 
             var empleado = await _context.Empleados

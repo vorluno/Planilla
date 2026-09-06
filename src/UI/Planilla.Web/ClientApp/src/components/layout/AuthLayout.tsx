@@ -11,7 +11,7 @@ import {
   DollarSign, CreditCard, Minus, Clock, XCircle, TreePalm,
   ClipboardList, BarChart3, ShieldCheck, FileText, Settings,
   ChevronDown, ChevronRight, Search, Bell, LogOut, Banknote, Check, Loader2,
-  Key, Activity,
+  Key, Activity, Receipt,
 } from 'lucide-react';
 
 interface AuthLayoutProps {
@@ -111,6 +111,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       '/vacaciones': 'Gestión de Vacaciones',
       '/planillas': 'Gestión de Planillas',
       '/decimo': 'Planilla de Décimo Tercer Mes',
+      '/ficha-isr': 'Ficha Anual de ISR',
       '/liquidaciones': 'Liquidaciones Laborales',
       '/reportes': 'Reportes de Planilla',
       '/configuracion': 'Configuración del Sistema',
@@ -532,6 +533,20 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
               >
                 <Banknote className="w-[19px] h-[19px] flex-shrink-0 text-amber-400" />
                 <span>Décimo 13°</span>
+              </NavLink>
+            )}
+
+            {/* Ficha anual de ISR */}
+            {canAccessModuleCheck('planillas') && (
+              <NavLink to="/ficha-isr" className={({ isActive }) =>
+                `flex items-center gap-2.5 px-2.5 py-2 rounded-lg font-semibold text-[13px] transition-all duration-150 border-l-2 ${
+                  isActive
+                    ? 'bg-white/[0.08] border-emerald-400 text-white'
+                    : 'border-transparent text-gray-400 hover:bg-white/[0.04] hover:text-gray-100 hover:border-emerald-500/40'
+                }`}
+              >
+                <Receipt className="w-[19px] h-[19px] flex-shrink-0 text-emerald-400" />
+                <span>Ficha ISR</span>
               </NavLink>
             )}
 

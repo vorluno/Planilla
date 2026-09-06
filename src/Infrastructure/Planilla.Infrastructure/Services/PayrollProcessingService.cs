@@ -29,17 +29,108 @@ public class PayrollProcessingService
     private readonly PayrollCalculationOrchestratorPortable _orchestrator;
     private readonly IAsistenciaCalculationService _asistenciaService;
     private readonly IDeduccionPrioridadEngine _deduccionEngine;
+    private readonly IAcumuladoFiscalService _acumuladoFiscalService;
 
     public PayrollProcessingService(
         ApplicationDbContext context,
         PayrollCalculationOrchestratorPortable orchestrator,
         IAsistenciaCalculationService asistenciaService,
-        IDeduccionPrioridadEngine deduccionEngine)
+        IDeduccionPrioridadEngine deduccionEngine,
+        IAcumuladoFiscalService acumuladoFiscalService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _orchestrator = orchestrator ?? throw new ArgumentNullException(nameof(orchestrator));
         _asistenciaService = asistenciaService ?? throw new ArgumentNullException(nameof(asistenciaService));
         _deduccionEngine = deduccionEngine ?? throw new ArgumentNullException(nameof(deduccionEngine));
+        _acumuladoFiscalService = acumuladoFiscalService ?? throw new ArgumentNullException(nameof(acumuladoFiscalService));
+    }
+
+    // ====================================================================
+    // ISR por método acumulativo
+    // ====================================================================
+
+    /// <summary>
+    /// Recalcula el ISR de un resultado ya calculado usando el motor acumulativo,
+    /// que compara el impuesto que el empleado debería llevar retenido a la fecha
+    /// contra el que ya se le retuvo y cobra solo la diferencia.
+    ///
+    /// Se hace después del orquestador y no dentro porque la base gravable es el
+    /// bruto menos el Seguro Social, y el Seguro Social sale de ese mismo cálculo.
+    /// </summary>
+    private async Task<(PayrollCalculationResult resultado, decimal isrGastoRepresentacion)>
+        AplicarIsrAcumulativoAsync(
+            PayrollCalculationResult resultado,
+            Empleado empleado,
+            PayPeriodType frecuencia,
+            DateTime fechaPago,
+            int payrollHeaderId,
+            decimal gastoRepresentacionPeriodo,
+            CancellationToken cancellationToken = default)
+    {
+        if (!empleado.IsSubjectToIncomeTax)
+            return (resultado, 0m);
+
+        var anio = fechaPago.Year;
+
+        var acumulado = await _acumuladoFiscalService.ObtenerAcumuladoAsync(
+            empleado.Id, anio, excluirPayrollHeaderId: payrollHeaderId,
+            cancellationToken: cancellationToken);
+
+        var numeroPeriodo = await _acumuladoFiscalService.ObtenerNumeroPeriodoAsync(
+            empleado.Id, anio, excluirPayrollHeaderId: payrollHeaderId,
+            cancellationToken: cancellationToken);
+
+        // El gasto de representación viaja dentro del bruto porque para la Caja de
+        // Seguro Social es salario (Ley 51 de 2005, Art. 91 num. 6), pero la renta
+        // lo grava aparte. Hay que separarlo antes de proyectar, y con él la parte
+        // del Seguro Social que le toca: se reparte a prorrata del bruto, que con
+        // una tasa plana da lo mismo que aplicarle el porcentaje directamente.
+        var gastoRepresentacion = Math.Min(gastoRepresentacionPeriodo, resultado.GrossPay);
+        var salarioPeriodo = resultado.GrossPay - gastoRepresentacion;
+
+        var cssDelSalario = resultado.GrossPay > 0m
+            ? Math.Round(resultado.CssEmployee * salarioPeriodo / resultado.GrossPay, 2,
+                MidpointRounding.AwayFromZero)
+            : 0m;
+
+        // La base del salario resta el Seguro Social, criterio confirmado por el
+        // contador. La del gasto de representación no resta nada: su tarifa corre
+        // sobre el total devengado.
+        var gravablePeriodo = salarioPeriodo - cssDelSalario;
+
+        var movimientos = new List<MovimientoIsr>
+        {
+            new(TratamientoIsr.GravableAcumulable, gravablePeriodo)
+        };
+
+        if (gastoRepresentacion > 0m)
+            movimientos.Add(new MovimientoIsr(TratamientoIsr.GastoRepresentacion, gastoRepresentacion));
+
+        var isr = MotorIsrPanama.Calcular(new CorridaIsr
+        {
+            Frecuencia = frecuencia,
+            NumeroPeriodoEmpleado = numeroPeriodo,
+            AcumuladoAnterior = acumulado,
+            Movimientos = movimientos
+        });
+
+        // El comprobante muestra una sola retención de renta: la del salario más la
+        // del gasto de representación.
+        var incomeTax = isr.IsrTotalDescontarPeriodo;
+
+        // El orquestador ya sumó su propio ISR en los totales; se rehacen con el nuevo.
+        var totalDeductions = resultado.CssEmployee
+                            + resultado.EducationalInsuranceEmployee
+                            + incomeTax;
+
+        var ajustado = resultado with
+        {
+            IncomeTax = incomeTax,
+            TotalDeductions = totalDeductions,
+            NetPay = resultado.GrossPay - totalDeductions
+        };
+
+        return (ajustado, isr.IsrGastoRepresentacionPeriodo);
     }
 
     /// <summary>
@@ -83,7 +174,13 @@ public class PayrollProcessingService
         decimal comisiones = horasRegistradas?.Commissions ?? 0m;
 
         decimal salarioPeriodo = empleado.GetSalarioPeriodo();
-        decimal grossPayAjustado = salarioPeriodo + montoHorasExtra - descuentoAusencias + comisiones;
+
+        // El gasto de representación entra al bruto: para la Caja de Seguro Social
+        // es salario. La renta lo separa después, con su propia tarifa.
+        decimal gastoRepresentacion = empleado.GetGastoRepresentacionPeriodo();
+        decimal grossPayAjustado = salarioPeriodo + gastoRepresentacion
+                                 + montoHorasExtra - descuentoAusencias + comisiones;
+        decimal isrGastoRepresentacion = 0m;
 
         // ====================================================================
         // PASO 3: Calcular deducciones legales (CSS, SE, ISR)
@@ -115,6 +212,22 @@ public class PayrollProcessingService
                 empleado.IsSubjectToIncomeTax,
                 payrollPeriodStart
             );
+
+            // El ISR del orquestador es una proyección del período suelto; el que
+            // manda es el acumulativo, que mira el año completo del empleado.
+            var cabecera = await _context.PayrollHeaders
+                .AsNoTracking()
+                .Where(h => h.Id == payrollHeaderId)
+                .Select(h => new { h.PayDate, h.PayPeriodType })
+                .FirstOrDefaultAsync();
+
+            (payrollResult, isrGastoRepresentacion) = await AplicarIsrAcumulativoAsync(
+                payrollResult,
+                empleado,
+                cabecera?.PayPeriodType ?? empleado.PayPeriodType,
+                cabecera?.PayDate ?? payrollPeriodEnd,
+                payrollHeaderId,
+                gastoRepresentacion);
         }
 
         // ====================================================================
@@ -164,6 +277,8 @@ public class PayrollProcessingService
             EducationalInsuranceEmployee = payrollResult.EducationalInsuranceEmployee,
             EducationalInsuranceEmployer = payrollResult.EducationalInsuranceEmployer,
             IncomeTax = payrollResult.IncomeTax,
+            GastoRepresentacion = gastoRepresentacion,
+            IsrGastoRepresentacion = isrGastoRepresentacion,
 
             // Deducciones adicionales - totales legacy
             OtherDeductions = 0,
@@ -278,6 +393,12 @@ public class PayrollProcessingService
             grossPay = hours.TotalHoursPay + hours.Commissions;
         }
 
+        // El gasto de representación entra al bruto: para la Caja de Seguro Social
+        // es salario. La renta lo separa después, con su propia tarifa.
+        decimal gastoRepresentacion = employee.GetGastoRepresentacionPeriodo();
+        grossPay += gastoRepresentacion;
+        decimal isrGastoRepresentacion = 0m;
+
         // ====================================================================
         // PASO 2: Deducciones legales CSS + SE + ISR
         // DEV-24 FIX: usar PayPeriodType de la planilla, no PayFrequency del empleado
@@ -308,6 +429,14 @@ public class PayrollProcessingService
                 isSubjectToIncomeTax: employee.IsSubjectToIncomeTax,
                 calculationDate: DateTime.UtcNow
             );
+
+            (calculationResult, isrGastoRepresentacion) = await AplicarIsrAcumulativoAsync(
+                calculationResult,
+                employee,
+                payrollHeader.PayPeriodType,
+                payrollHeader.PayDate,
+                payrollHeader.Id,
+                gastoRepresentacion);
         }
 
         // ====================================================================
@@ -436,6 +565,8 @@ public class PayrollProcessingService
             EducationalInsuranceEmployee = calculationResult.EducationalInsuranceEmployee,
             EducationalInsuranceEmployer = calculationResult.EducationalInsuranceEmployer,
             IncomeTax = calculationResult.IncomeTax,
+            GastoRepresentacion = gastoRepresentacion,
+            IsrGastoRepresentacion = isrGastoRepresentacion,
             OtherDeductions = 0,
             DeduccionesFijas = deduccionesResult.TotalDeduccionesAdicionales - deduccionesResult.TotalPrestamos - deduccionesResult.TotalAnticipos,
             Prestamos = deduccionesResult.TotalPrestamos,

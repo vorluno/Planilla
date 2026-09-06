@@ -55,6 +55,7 @@ namespace Vorluno.Planilla.Web.Extensions
             services.AddScoped<PayrollStateMachine>();
             services.AddScoped<PayrollCalculationOrchestratorPortable>();
             services.AddScoped<Vorluno.Planilla.Application.Interfaces.IDeduccionPrioridadEngine, DeduccionPrioridadEngine>();
+            services.AddScoped<Vorluno.Planilla.Application.Interfaces.IAcumuladoFiscalService, Vorluno.Planilla.Infrastructure.Services.AcumuladoFiscalService>();
             services.AddScoped<PayrollProcessingService>();
 
             // Phase E: Multi-tenancy y auditor�a
