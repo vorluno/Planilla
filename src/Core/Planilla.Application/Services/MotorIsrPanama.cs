@@ -106,7 +106,23 @@ public static class MotorIsrPanama
         return Redondear(IsrHasta50000 + (rentaNetaGravable - Limite15) * Tasa25);
     }
 
-    /// <summary>Períodos del año según la frecuencia del EMPLEADO (52 / 26 / 24 / 12).</summary>
+    /// <summary>
+    /// Períodos EQUIVALENTES del año: los del calendario más los que aporta el décimo.
+    ///
+    /// El décimo tercer mes también tributa, así que entra en el reparto. Equivale a un mes
+    /// de salario, o sea P/12 períodos, de modo que el total es P x 13/12:
+    ///
+    ///   Semanal 52 -> 56.33     Quincenal 24 -> 26.00
+    ///   Bisemanal 26 -> 28.17   Mensual   12 -> 13.00
+    ///
+    /// El caso quincenal da 26, que es el divisor que usa el contador: "no son 24 quincenas,
+    /// son 26". La planilla regular retiene 24/26 del impuesto anual y el décimo el 2/26
+    /// restante, repartido entre sus tres partidas.
+    /// </summary>
+    public static decimal ObtenerPeriodosEquivalentesAnuales(PayPeriodType frecuencia)
+        => ObtenerPeriodosAnuales(frecuencia) * 13m / 12m;
+
+    /// <summary>Períodos del calendario según la frecuencia del EMPLEADO (52 / 26 / 24 / 12).</summary>
     public static int ObtenerPeriodosAnuales(PayPeriodType frecuencia) => frecuencia switch
     {
         PayPeriodType.Semanal => 52,
@@ -120,7 +136,7 @@ public static class MotorIsrPanama
     {
         Validar(corrida);
 
-        var periodosAnuales = ObtenerPeriodosAnuales(corrida.Frecuencia);
+        var periodosEquivalentes = ObtenerPeriodosEquivalentesAnuales(corrida.Frecuencia);
         var movimientos = corrida.Movimientos;
 
         var ingresoGravablePeriodo = movimientos
@@ -134,30 +150,32 @@ public static class MotorIsrPanama
         var ingresoGravableAcumulado = corrida.AcumuladoAnterior.IngresoGravableTotal + ingresoGravablePeriodo;
         var decimoAcumulado = corrida.AcumuladoAnterior.DecimoTotal + decimoPeriodo;
 
-        // Proyección desde lo REALMENTE acumulado, no desde el bruto de este período.
-        // Así un mes con horas extra se diluye en el promedio y el año converge solo.
-        // La fecha de ingreso no interviene: si lo proyectado genera ISR, se retiene, y la
-        // regularización de las corridas siguientes corrige cualquier exceso.
-        var promedioPorPeriodo = ingresoGravableAcumulado / corrida.NumeroPeriodoEmpleado;
-        var salarioAnualProyectado = promedioPorPeriodo * periodosAnuales;
+        // Período EQUIVALENTE corrido: los períodos de calendario más lo que aporta el décimo
+        // ya pagado, expresado en períodos de salario. Reproduce la columna PERIODOS del libro
+        // del contador — 7.667, 16.333, 25.000, 26.000 en una quincenal con partidas en las
+        // quincenas 7, 15 y 23.
+        var promedioSimple = ingresoGravableAcumulado / corrida.NumeroPeriodoEmpleado;
+        var periodoEquivalente = promedioSimple > 0
+            ? corrida.NumeroPeriodoEmpleado + decimoAcumulado / promedioSimple
+            : corrida.NumeroPeriodoEmpleado;
 
-        // El décimo es un mes de salario. Si lo ya pagado supera esa estimación, manda lo real.
-        var decimoAnualProyectado = Math.Max(salarioAnualProyectado / 12m, decimoAcumulado);
-
-        var ingresoAnualProyectado = salarioAnualProyectado + decimoAnualProyectado;
+        // Proyección desde lo REALMENTE acumulado, no desde el bruto de este período: un
+        // período con horas extra se diluye en el promedio y el año converge solo. Todo lo
+        // gravable se proyecta, incluidos los ingresos variables.
+        var totalAcumulado = ingresoGravableAcumulado + decimoAcumulado;
+        var ingresoAnualProyectado = totalAcumulado / periodoEquivalente * periodosEquivalentes;
         var rentaNeta = Math.Max(0m, ingresoAnualProyectado - corrida.DeduccionesFiscalesAnuales);
         var isrAnual = CalcularIsrAnual(rentaNeta);
 
-        // Parte del impuesto anual que corresponde a los períodos ya corridos.
+        // Parte del impuesto anual que corresponde a lo ya corrido, medido en períodos
+        // equivalentes. Al llegar el décimo el contador salta y con él la retención debida,
+        // que es justamente cómo el décimo paga su parte del impuesto.
         //
-        // NOTA DE IMPLEMENTACIÓN — única desviación respecto del código de la especificación.
-        // Aquel sumaba aquí un "efecto ISR del décimo" adicional en las corridas donde se paga
-        // la partida. Ese ajuste cuenta el décimo dos veces: ya está dentro de
-        // ingresoAnualProyectado (vía decimoAnualProyectado) y por tanto dentro de isrAnual.
-        // Verificado con tres sueldos: retenía 337.50 / 2,256.25 / 6,418.75 cuando lo debido
-        // era 300.00 / 2,250.00 / 6,350.00, y hacía saltar el descuento en la quincena de la
-        // partida para caer a cero en la siguiente. Sin ese ajuste el año cierra exacto.
-        var proporcion = (decimal)corrida.NumeroPeriodoEmpleado / periodosAnuales;
+        // NOTA — desviación respecto del código de la especificación: aquel sumaba aquí un
+        // "efecto ISR del décimo" adicional. Ese ajuste lo contaba dos veces, porque el décimo
+        // ya entra en la proyección anual. Verificado con tres sueldos: retenía
+        // 337.50 / 2,256.25 / 6,418.75 cuando lo debido era 300.00 / 2,250.00 / 6,350.00.
+        var proporcion = periodoEquivalente / periodosEquivalentes;
         var isrDebidoAcumulado = Redondear(isrAnual * proporcion);
 
         var isrInicial = corrida.AcumuladoAnterior.IsrRetenidoInicial;

@@ -88,12 +88,22 @@ public class IncomeTaxCalculationServicePortable
         //      - Núm. 4: "Las contribuciones al Seguro Educativo" (1.25% del empleado),
         //        deducible solo si el empleado cotiza Seguro Educativo.
         //    La CSS del empleado NO figura en el Art. 709 ⇒ NO se descuenta de la base del ISR.
-        var validDependents = Math.Min(dependents, config.MaxDependents);
-        var dependentDeduction = validDependents * config.DependentDeductionAmount;
+        // La deducción básica de B/. 800 (Art. 709 núm. 2, mod. Art. 25 Ley 8/2010) es por
+        // PAREJA en declaración conjunta, no por dependiente, y no se aplica en la retención
+        // de planilla: el empleador no puede saber si la pareja declarará en conjunta, y si
+        // luego no lo hicieran la retención quedaría corta con la contingencia a cargo de la
+        // empresa. Se ajusta en la declaración anual del trabajador.
+        var dependentDeduction = 0m;
 
-        var seDeduction = isSubjectToEducationalInsurance
-            ? annualIncome * config.EducationalInsuranceEmployeeRate / 100m
-            : 0m;
+        // El Seguro Educativo TAMPOCO se deduce de la base del ISR.
+        // El numeral 4 del Art. 709 fue modificado por el Art. 24 de la Ley 8 de 2010, que
+        // eliminó esa deducción; el instructivo vigente de la DGI enumera las deducciones
+        // personales y el Seguro Educativo no figura entre ellas. Criterio confirmado por el
+        // contador: "corre por una vía paralela y no resta de la base imponible".
+        //
+        // Tampoco se deduce la cuota de CSS. La base del ISR en la retención de planilla es
+        // el ingreso gravable completo.
+        var seDeduction = 0m;
 
         // 4. Ingreso neto gravable (después de las deducciones del Art. 709).
         //    Se mantiene el valor exacto (sin redondeo intermedio) para aplicar la tarifa.

@@ -106,7 +106,7 @@ public class MotorIsrPanamaTests
 
         r.IngresoAnualProyectado.Should().Be(13_000m);
         r.IsrAnualProyectado.Should().Be(300m);
-        r.IsrDescontarPeriodo.Should().Be(12.50m);   // 300 x 1/24
+        r.IsrDescontarPeriodo.Should().Be(11.54m);   // 300 x 1/26 — el 11.53 del contador
     }
 
     // ── Caso 2: saldos iniciales de migración ────────────────────────
@@ -117,14 +117,14 @@ public class MotorIsrPanamaTests
         var acum = new AcumuladoIsr
         {
             IngresoGravableInicial = 5_500m,   // 11 quincenas ya pagadas en el otro sistema
-            IsrRetenidoInicial = 137.50m       // y ya le retuvieron esto
+            IsrRetenidoInicial = 127m          // y ya le retuvieron esto
         };
 
         var r = MotorIsrPanama.Calcular(Corrida(PayPeriodType.Quincenal, 12, 500m, acumulado: acum));
 
-        r.IsrRetenidoInicial.Should().Be(137.50m);
-        r.IsrDebidoAcumulado.Should().Be(150m);      // 300 x 12/24
-        r.IsrDescontarPeriodo.Should().Be(12.50m);   // solo la diferencia, sin duplicar
+        r.IsrRetenidoInicial.Should().Be(127m);
+        r.IsrDebidoAcumulado.Should().Be(138.46m);   // 300 x 12/26
+        r.IsrDescontarPeriodo.Should().Be(11.46m);   // solo la diferencia, sin duplicar
     }
 
     // ── Caso 3: nunca se muestra ISR negativo ────────────────────────
@@ -133,14 +133,15 @@ public class MotorIsrPanamaTests
     public void YaSeRetuvoDeMas__DescuentaCeroYGuardaElSaldoAFavor()
     {
         // El ejemplo literal de la especificación: debido 900, retenido 975, saldo a favor 75.
-        // Salario mensual 1,769.23 → proyectado 23,000 → ISR anual 1,800 → debido a mitad de año 900.
+        // Salario mensual 1,846.15 → proyectado 24,000 → ISR anual 1,950 → debido a los
+        // 6 de 13 períodos equivalentes = 900.
         var acum = new AcumuladoIsr
         {
-            IngresoGravableInicial = 8_846.15m,   // cinco meses ya devengados
+            IngresoGravableInicial = 9_230.77m,   // cinco meses ya devengados
             IsrRetenidoInicial = 975m             // pero ya le retuvieron de más
         };
         var r = MotorIsrPanama.Calcular(
-            Corrida(PayPeriodType.Mensual, 6, 1_769.23m, acumulado: acum));
+            Corrida(PayPeriodType.Mensual, 6, 1_846.15m, acumulado: acum));
 
         r.IsrDebidoAcumulado.Should().BeApproximately(900m, 0.05m);
         r.IsrDescontarPeriodo.Should().Be(0m);
@@ -270,4 +271,48 @@ public class MotorIsrPanamaTests
         r.IsrRetenidoTotalAnterior.Should().Be(50m);
         r.IsrRetenidoTotalNuevo.Should().Be(r.IsrRetenidoTotalAnterior + r.IsrDescontarPeriodo);
     }
+    // ── El reparto que describe el contador ──────────────────────────
+
+    [Fact]
+    public void RepartoDelContador__24QuincenasMasLasDosDelDecimo()
+    {
+        // "No son 24 quincenas, son 26."  500 x 26 = 13,000 → ISR 300 → 300/26 = 11.54.
+        // La planilla retiene 24 x 11.54 = 276.92 y el decimo el resto: 23.08, en 3 partidas.
+        MotorIsrPanama.ObtenerPeriodosEquivalentesAnuales(PayPeriodType.Quincenal).Should().Be(26m);
+
+        var porQuincena = MotorIsrPanama.Calcular(Corrida(PayPeriodType.Quincenal, 1, 500m));
+        porQuincena.IsrAnualProyectado.Should().Be(300m);
+        porQuincena.IsrDescontarPeriodo.Should().Be(11.54m);
+
+        var enPlanilla = 11.54m * 24m;
+        var enDecimo = 300m - enPlanilla;
+        enPlanilla.Should().BeApproximately(276.96m, 0.10m);
+        enDecimo.Should().BeApproximately(23.08m, 0.10m);
+        (enDecimo / 3m).Should().BeApproximately(7.69m, 0.05m);
+    }
+
+    [Theory]
+    [InlineData(PayPeriodType.Semanal, 56.3333333333333333333333333)]
+    [InlineData(PayPeriodType.Bisemanal, 28.1666666666666666666666667)]
+    [InlineData(PayPeriodType.Quincenal, 26)]
+    [InlineData(PayPeriodType.Mensual, 13)]
+    public void PeriodosEquivalentes__MismoCriterioEnTodaFrecuencia(PayPeriodType f, decimal esperado)
+    {
+        MotorIsrPanama.ObtenerPeriodosEquivalentesAnuales(f)
+            .Should().BeApproximately(esperado, 0.0001m);
+    }
+
+    [Fact]
+    public void PeriodoEquivalente__AvanzaConElDecimoIgualQueEnElLibroDelContador()
+    {
+        // La columna PERIODOS del Excel da 7.667 en la quincena de la primera partida.
+        var acum = new AcumuladoIsr { IngresoGravableProcesado = 3_000m };   // 6 quincenas
+        var r = MotorIsrPanama.Calcular(Corrida(PayPeriodType.Quincenal, 7, 500m, decimo: 333.33m, acumulado: acum));
+
+        // 3,500 de salario + 333.33 de decimo, proyectado sobre 7.667 periodos equivalentes.
+        r.IngresoGravableAcumulado.Should().Be(3_500m);
+        r.DecimoAcumulado.Should().Be(333.33m);
+        r.IngresoAnualProyectado.Should().BeApproximately(13_000m, 1m);
+    }
+
 }
