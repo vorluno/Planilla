@@ -75,11 +75,11 @@ export default function RolesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-gray-100 flex items-center gap-3">
             <Shield className="w-8 h-8 text-blue-600" />
             Roles y Permisos
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-400 mt-2">
             Crea y gestiona los roles de tu empresa. Asigna permisos a cada rol y luego asígnalos a los usuarios.
           </p>
         </div>
@@ -104,18 +104,18 @@ export default function RolesPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Roles de la empresa</h2>
-            <span className="text-sm text-gray-600">{editableRoles.length} roles</span>
+            <h2 className="text-lg font-semibold text-gray-100">Roles de la empresa</h2>
+            <span className="text-sm text-gray-400">{editableRoles.length} roles</span>
           </div>
         </CardHeader>
         <CardBody>
           {editableRoles.length === 0 ? (
             <div className="text-center py-12">
               <Shield className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-gray-100 mb-2">
                 No hay roles creados
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-400 mb-4">
                 Crea el primer rol, asígnale permisos y luego asígnalo a los usuarios desde la pestaña Usuarios.
               </p>
               <Button icon={Plus} onClick={() => setShowCreateModal(true)}>

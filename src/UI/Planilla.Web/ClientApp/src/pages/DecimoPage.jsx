@@ -102,7 +102,17 @@ export default function DecimoPage() {
     try {
       setCalculando(true);
       const res = await api.post(`/api/decimo/${planillaId}/calcular`);
-      toast.success(res?.message || 'Décimo calculado');
+
+      // Un décimo puede calcularse "bien" y dar cero: si en el período no hay
+      // planillas aprobadas, no hay salario devengado sobre el cual calcularlo.
+      // Decir solo "calculado" deja al usuario mirando una tabla en cero sin
+      // saber si el sistema falló o si el dato es correcto.
+      if (!res?.totalDecimo) {
+        toast('No hay salario devengado en ese período: revisa que las planillas del rango estén aprobadas.',
+          { icon: '⚠️', duration: 6000 });
+      } else {
+        toast.success(res?.message || 'Décimo calculado');
+      }
       // Refrescar el detalle abierto
       const updated = await api.get(`/api/decimo/${planillaId}`);
       setViewPlanilla(updated);
@@ -165,7 +175,7 @@ export default function DecimoPage() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
         >
           <Plus className="w-4 h-4" /> Nueva Planilla
         </button>
@@ -289,7 +299,7 @@ export default function DecimoPage() {
                 </button>
                 <button
                   type="submit" disabled={saving}
-                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Crear'}
                 </button>
@@ -319,7 +329,7 @@ export default function DecimoPage() {
                   <button
                     onClick={() => handleCalcular(viewPlanilla.id)}
                     disabled={calculando}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                   >
                     {calculando ? <Loader2 className="w-4 h-4 animate-spin" /> : <Calculator className="w-4 h-4" />}
                     {viewPlanilla.estado === 'Borrador' ? 'Calcular' : 'Recalcular'}
@@ -408,6 +418,18 @@ export default function DecimoPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-700">
+                        {(viewPlanilla.detalles ?? []).length === 0 && (
+                          <tr>
+                            <td colSpan={9} className="px-3 py-10 text-center text-gray-400">
+                              <p>No hay salario devengado en este período.</p>
+                              <p className="text-sm mt-1 text-gray-400">
+                                El décimo se calcula sobre las planillas aprobadas del rango
+                                {' '}{fmtDate(viewPlanilla.periodoDesde)} — {fmtDate(viewPlanilla.periodoHasta)}.
+                                Si esperabas ver empleados, revisa que esas planillas existan y estén aprobadas.
+                              </p>
+                            </td>
+                          </tr>
+                        )}
                         {(viewPlanilla.detalles ?? []).map(det => {
                           const isExpanded = expandedRows.has(det.id);
                           return (

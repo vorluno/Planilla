@@ -65,8 +65,8 @@ export default function SalarioMinimoPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900">Salario Minimo Legal</h1>
-                <p className="mt-1 text-sm text-gray-500">
+                <h1 className="text-3xl font-bold text-gray-100">Salario Mínimo Legal</h1>
+                <p className="mt-1 text-sm text-gray-400">
                     Configure el salario minimo legal vigente para su empresa. Este valor se usa para proteger
                     el salario minimo inembargable al aplicar deducciones.
                 </p>

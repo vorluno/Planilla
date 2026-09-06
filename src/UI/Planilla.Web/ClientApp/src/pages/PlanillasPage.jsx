@@ -26,6 +26,7 @@ import { Button } from '../components/ui/Button';
 import { api } from '../services/api';
 import ConfirmModal from '../components/ConfirmModal';
 import { formatCurrency } from '../utils/currency';
+import { formatDate } from '../utils/date';
 import { PAY_PERIOD_CONFIG } from '../constants/payroll';
 
 // Parsea fechas ISO de la API sin desplazamiento de timezone (UTC-5 Panama)
@@ -541,6 +542,14 @@ const PlanillasPage = () => {
     // Determina si la planilla tiene datos calculados
     const hasCalculatedData = selectedPlanilla && selectedPlanilla.status >= 1;
 
+    // Cuántos empleados hay EN ESTA PLANILLA. Antes se mostraba empleadosCount,
+    // que es la plantilla activa completa de la empresa: toda planilla decía
+    // "30 empleados" aunque hubiera pagado a una sola persona. Las filas se
+    // generan para todo el personal, así que solo cuentan las que devengaron.
+    const empleadosEnPlanilla = selectedPlanilla?.details
+        ? selectedPlanilla.details.filter(d => (d.grossPay || 0) > 0).length
+        : 0;
+
     return (
         <div className="space-y-6">
 
@@ -678,11 +687,11 @@ const PlanillasPage = () => {
                         {hasCalculatedData ? (
                             <>
                                 <p className="text-2xl font-bold text-gray-100 font-mono">{formatCurrency(selectedPlanilla.totalGrossPay)}</p>
-                                <p className="text-xs text-gray-500 mt-1.5">
-                                    {empleadosCount} empleados
-                                    {empleadosCount > 0 && selectedPlanilla.totalGrossPay > 0 && (
+                                <p className="text-xs text-gray-400 mt-1.5">
+                                    {empleadosEnPlanilla} {empleadosEnPlanilla === 1 ? 'empleado' : 'empleados'}
+                                    {empleadosEnPlanilla > 0 && selectedPlanilla.totalGrossPay > 0 && (
                                         <span className="ml-1">
-                                            • Promedio B/. {(selectedPlanilla.totalGrossPay / empleadosCount).toLocaleString('es-PA', { minimumFractionDigits: 2 })}
+                                            • Promedio {formatCurrency(selectedPlanilla.totalGrossPay / empleadosEnPlanilla)}
                                         </span>
                                     )}
                                 </p>
@@ -690,7 +699,7 @@ const PlanillasPage = () => {
                         ) : (
                             <>
                                 <p className="text-2xl font-bold text-gray-600 font-mono" title="Calcula la planilla para ver los totales">—</p>
-                                <p className="text-xs text-gray-600 mt-1.5">{empleadosCount} empleados</p>
+                                <p className="text-xs text-gray-400 mt-1.5">{empleadosCount} en plantilla</p>
                             </>
                         )}
                     </div>
@@ -785,19 +794,22 @@ const PlanillasPage = () => {
                         )}
                     </div>
                 </div>
-            ) : (
+            ) : planillas.length > 0 ? (
+                // Solo cuando hay planillas y ninguna elegida. Sin esta condición se
+                // apilaban dos estados vacíos con el mismo icono diciendo lo mismo:
+                // este y el del historial, que además ya ofrece crear la primera.
                 <div className="bg-navy-900 rounded-xl shadow-lg shadow-black/20 border border-navy-700 p-6">
                     <EmptyState
                         icon={
-                            <svg className="w-16 h-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-16 h-16 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                         }
-                        title="Sin Datos de Planilla"
-                        description="Selecciona una planilla o crea una nueva para ver los detalles"
+                        title="Ninguna planilla seleccionada"
+                        description="Elige una planilla del historial para ver sus totales y acciones"
                     />
                 </div>
-            )}
+            ) : null}
 
             {/* ==================== PANEL DE ACCIONES ==================== */}
             {selectedPlanilla && (
@@ -879,7 +891,7 @@ const PlanillasPage = () => {
                                 <button
                                     onClick={handleApprove}
                                     disabled={loadingAction === 'approving'}
-                                    className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-6 py-3.5 rounded-xl font-semibold text-[15px] transition-all shadow-lg shadow-green-900/40 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 hover:shadow-xl"
+                                    className="inline-flex items-center gap-3 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3.5 rounded-xl font-semibold text-[15px] transition-all shadow-lg shadow-primary-900/40 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 hover:shadow-xl"
                                 >
                                     {loadingAction === 'approving' ? (
                                         <>
@@ -1307,7 +1319,7 @@ const PlanillasPage = () => {
                         </button>
                         <button
                             onClick={confirmedApprove}
-                            className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-colors shadow-lg shadow-green-900/40"
+                            className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-colors shadow-lg shadow-primary-900/40"
                         >
                             Confirmar Aprobación
                         </button>
@@ -1329,7 +1341,7 @@ const PlanillasPage = () => {
                 {planillas.length === 0 ? (
                     <EmptyState
                         icon={
-                            <svg className="w-16 h-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-16 h-16 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                         }
@@ -1338,7 +1350,7 @@ const PlanillasPage = () => {
                         action={
                             <button
                                 onClick={openNewModal}
-                                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                                className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                             >
                                 <Plus className="w-5 h-5" />
                                 Nueva Planilla
@@ -1529,6 +1541,9 @@ const PlanillasPage = () => {
                                 onChange={(e) => setFormData({ ...formData, periodStartDate: e.target.value })}
                                 className="w-full px-3 py-2 border border-navy-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-navy-800 text-gray-100"
                             />
+                            {formData.periodStartDate && (
+                                <p className="text-xs text-gray-400 mt-1">{formatDate(formData.periodStartDate)}</p>
+                            )}
                         </div>
 
                         {/* Fecha Fin */}
@@ -1543,6 +1558,9 @@ const PlanillasPage = () => {
                                 onChange={(e) => setFormData({ ...formData, periodEndDate: e.target.value })}
                                 className="w-full px-3 py-2 border border-navy-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-navy-800 text-gray-100"
                             />
+                            {formData.periodEndDate && (
+                                <p className="text-xs text-gray-400 mt-1">{formatDate(formData.periodEndDate)}</p>
+                            )}
                         </div>
 
                         {/* Fecha de Pago */}
@@ -1557,6 +1575,9 @@ const PlanillasPage = () => {
                                 onChange={(e) => setFormData({ ...formData, payDate: e.target.value })}
                                 className="w-full px-3 py-2 border border-navy-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-navy-800 text-gray-100"
                             />
+                            {formData.payDate && (
+                                <p className="text-xs text-gray-400 mt-1">{formatDate(formData.payDate)}</p>
+                            )}
                         </div>
                     </div>
 
@@ -1570,7 +1591,7 @@ const PlanillasPage = () => {
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors shadow-lg shadow-black/20"
+                            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors shadow-lg shadow-black/20"
                         >
                             Crear Planilla
                         </button>

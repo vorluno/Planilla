@@ -429,27 +429,27 @@ const EmpleadosPage = () => {
                     {/* Stats bar compacta */}
                     <div className="flex items-center gap-3 flex-wrap">
                         <div className="flex items-center gap-2 px-3 py-1.5 bg-navy-800 border border-navy-700 rounded-lg">
+                            <div className="w-2 h-2 rounded-full bg-gray-500" />
+                            <span className="text-sm text-gray-300 font-medium">
+                                {empleados.length} <span className="text-gray-400 font-normal">registrados</span>
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-navy-800 border border-navy-700 rounded-lg">
                             <div className="w-2 h-2 rounded-full bg-primary-400" />
                             <span className="text-sm text-gray-300 font-medium">
-                                {empleados.length} <span className="text-gray-500 font-normal">registrados</span>
+                                {activeEmpleados.length} <span className="text-gray-400 font-normal">activos</span>
                             </span>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 bg-navy-800 border border-navy-700 rounded-lg">
-                            <div className="w-2 h-2 rounded-full bg-green-400" />
+                            <div className="w-2 h-2 rounded-full bg-gray-500" />
                             <span className="text-sm text-gray-300 font-medium">
-                                {activeEmpleados.length} <span className="text-gray-500 font-normal">activos</span>
+                                {empleados.filter(e => !e.estaActivo && !e.isDeleted).length} <span className="text-gray-400 font-normal">inactivos</span>
                             </span>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 bg-navy-800 border border-navy-700 rounded-lg">
-                            <div className="w-2 h-2 rounded-full bg-red-400" />
-                            <span className="text-sm text-gray-300 font-medium">
-                                {empleados.filter(e => !e.estaActivo && !e.isDeleted).length} <span className="text-gray-500 font-normal">inactivos</span>
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-navy-800 border border-navy-700 rounded-lg">
-                            <div className="w-2 h-2 rounded-full bg-purple-400" />
-                            <span className="text-sm font-mono text-gray-300 font-medium">
-                                {formatBalboas(totalNomina)} <span className="text-gray-500 font-normal font-sans">nómina est.</span>
+                            <div className="w-2 h-2 rounded-full bg-gray-500" />
+                            <span className="text-sm font-mono text-gray-100 font-medium">
+                                {formatBalboas(totalNomina)} <span className="text-gray-400 font-normal font-sans">nómina est.</span>
                             </span>
                         </div>
                     </div>
@@ -568,14 +568,14 @@ const EmpleadosPage = () => {
                                         {(() => {
                                             // Usar hourlyRate del backend si está disponible y > 0
                                             if (empleado.hourlyRate && empleado.hourlyRate > 0) {
-                                                return `B/. ${Number(empleado.hourlyRate).toLocaleString('es-PA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                                                return `B/. ${Number(empleado.hourlyRate).toLocaleString('es-PA', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`;
                                             }
                                             // Fallback: calcular usando la fórmula mensual
                                             const hoursPerWeek = empleado.hoursPerWeek || 48;
                                             const weeksPerMonth = 52 / 12; // 4.3333...
                                             const hoursPerMonth = hoursPerWeek * weeksPerMonth;
                                             const rate = hoursPerMonth > 0 ? empleado.salarioBase / hoursPerMonth : 0;
-                                            return `B/. ${Number(rate).toLocaleString('es-PA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                                            return `B/. ${Number(rate).toLocaleString('es-PA', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`;
                                         })()}
                                     </td>
                                     <td className="py-3 px-4 text-sm text-gray-500">
